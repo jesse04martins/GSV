@@ -1,0 +1,49 @@
+object TFrmBaseEditarCadastro: TTFrmBaseEditarCadastro
+  Left = 0
+  Top = 0
+  BorderStyle = bsDialog
+  Caption = 'TFrmBaseEditarCadastro'
+  ClientHeight = 211
+  ClientWidth = 457
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  KeyPreview = True
+  OldCreateOrder = False
+  Position = poScreenCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object pnlRodape: TPanel
+    Left = 0
+    Top = 160
+    Width = 457
+    Height = 51
+    Align = alBottom
+    BevelKind = bkFlat
+    BevelOuter = bvNone
+    TabOrder = 0
+    object btSalvar: TBitBtn
+      Left = 263
+      Top = 0
+      Width = 94
+      Height = 47
+      Align = alRight
+      Caption = 'Salvar'
+      TabOrder = 0
+      ExplicitLeft = 267
+    end
+    object btCancelar: TBitBtn
+      Left = 357
+      Top = 0
+      Width = 96
+      Height = 47
+      Align = alRight
+      Caption = 'Cancelar'
+      TabOrder = 1
+      ExplicitLeft = 358
+    end
+  end
+end

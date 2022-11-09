@@ -1,0 +1,72 @@
+unit View.PanoConta.Editar;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBaseEditarCadastro,Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  Model.PlanoContas, Dao.interfaces, Data.DB;
+
+type
+  TFrmPlanoContasEditar = class(TFrmBaseEditarCadastro)
+    Label1: TLabel;
+    edtPlano: TEdit;
+    cbTipo: TComboBox;
+    Label2: TLabel;
+    procedure FormShow(Sender: TObject);
+  private
+    FDao : iDao<TModelPlanoContas>;
+    FModel : TModelPlanoContas;
+    procedure EventoSalvarCorrecao(Sender: TObject);
+    procedure EventoSalvarInsercao(Sender: TObject);
+
+  public
+    constructor Create(AOwner: TComponent; ADao : iDao<TModelPlanoContas>); overload;
+    constructor Create(AOwner: TComponent; ADao : iDao<TModelPlanoContas>; ADataSet : TDataSet); overload;
+  end;
+
+var
+  FrmPlanoContasEditar: TFrmPlanoContasEditar;
+
+implementation
+
+{$R *.dfm}
+
+uses Model.Enum;
+
+
+constructor TFrmPlanoContasEditar.Create(AOwner: TComponent; ADao : iDao<TModelPlanoContas>);
+begin
+   inherited Create(AOwner);
+   FDao   := ADao;
+   FModel := TModelPlanoContas.Create;
+end;
+
+constructor TFrmPlanoContasEditar.Create(AOwner: TComponent; ADao: iDao<TModelPlanoContas>; ADataSet: TDataSet);
+begin
+   inherited Create(AOwner);
+   FDao   := ADao;
+   FModel := TModelPlanoContas.Create;
+
+   FModel.IdPlano := ADataSet.FieldByName('id_plano').AsInteger;
+   FModel.Plano   := ADataSet.FieldByName('plano').AsString;
+   FModel.Tipo    := TTipoPlanoConta(ADataSet.FieldByName('plano').AsInteger);
+end;
+
+procedure TFrmPlanoContasEditar.EventoSalvarCorrecao(Sender: TObject);
+begin
+
+end;
+
+procedure TFrmPlanoContasEditar.EventoSalvarInsercao(Sender: TObject);
+begin
+
+end;
+
+procedure TFrmPlanoContasEditar.FormShow(Sender: TObject);
+begin
+   edtPlano.Text    := FModel.Plano;
+   cbTipo.ItemIndex := Integer(FModel.Tipo);
+end;
+
+end.

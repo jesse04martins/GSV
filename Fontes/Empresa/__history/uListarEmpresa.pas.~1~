@@ -1,0 +1,22 @@
+unit uListarEmpresa;
+
+interface
+
+uses System.SysUtils, System.Classes, Interfaces, dbSQL.Interfaces, Dao.Interfaces, Model.PlanoContas,
+     Data.DB;
+
+type
+  TListarPlanoConta = class(TInterfacedObject, IOperation<IParametroSQL>)
+  private
+    FDB_SQLCommand: iDB_SQLCommand;
+    FDao : iDao<TModelPlanoContas>;
+    FDataSource : TDataSource;
+  public
+    constructor Create(ADB_SQLCommand : iDB_SQLCommand; ADataSource : TDataSource);
+    destructor Destroy; override;
+    procedure Execute(value : IParametroSQL);
+  end;
+
+implementation
+
+end.

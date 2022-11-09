@@ -1,0 +1,17 @@
+unit Controller.FluxosCaixa;
+
+interface
+
+uses System.Classes,  System.SysUtils, Data.DB;
+
+type
+  TControllerFluxosCaixa = class
+  private
+    FDataource : TDataSource;
+  public
+
+  end;
+
+implementation
+
+end.

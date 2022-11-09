@@ -1,0 +1,27 @@
+unit View.PanoConta;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBaseCadastro, Data.DB,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls;
+
+type
+  TfrmPlanoContas = class(TFrmBaseCadastro)
+    Label1: TLabel;
+    Edit1: TEdit;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmPlanoContas: TfrmPlanoContas;
+
+implementation
+
+{$R *.dfm}
+
+end.

@@ -1,0 +1,56 @@
+object frmPrincipal: TfrmPrincipal
+  Left = 0
+  Top = 0
+  Caption = 'Controle de Fluxos de Caixa'
+  ClientHeight = 318
+  ClientWidth = 738
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 738
+    Height = 65
+    Align = alTop
+    TabOrder = 0
+    object mnPlanoContas: TSpeedButton
+      Left = 1
+      Top = 1
+      Width = 112
+      Height = 63
+      Align = alLeft
+      Caption = 'Plano de Contas'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      OnClick = mnPlanoContasClick
+    end
+    object mnFluxosCaixa: TSpeedButton
+      Left = 113
+      Top = 1
+      Width = 112
+      Height = 63
+      Align = alLeft
+      Caption = 'Fluxos de Caixa'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      OnClick = mnPlanoContasClick
+      ExplicitLeft = 193
+      ExplicitTop = 0
+    end
+  end
+end

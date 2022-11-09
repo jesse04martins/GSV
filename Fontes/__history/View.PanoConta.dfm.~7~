@@ -1,0 +1,121 @@
+inherited frmPlanoContas: TfrmPlanoContas
+  BorderStyle = bsDialog
+  Caption = 'Plano de Contas'
+  ClientHeight = 267
+  ClientWidth = 454
+  ExplicitWidth = 460
+  ExplicitHeight = 296
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlBotao: TPanel
+    Width = 454
+    Height = 42
+    ExplicitLeft = 0
+    ExplicitTop = 0
+    ExplicitWidth = 454
+    ExplicitHeight = 42
+    inherited btNovo: TBitBtn
+      Height = 42
+    end
+    inherited btCorrigir: TBitBtn
+      Width = 90
+      Height = 42
+      ExplicitWidth = 90
+      ExplicitHeight = 36
+    end
+    inherited btExcluir: TBitBtn
+      Left = 168
+      Width = 83
+      Height = 42
+      ExplicitWidth = 83
+      ExplicitHeight = 36
+    end
+    inherited btImprimir: TBitBtn
+      Left = 251
+      Width = 96
+      Height = 42
+      ExplicitWidth = 96
+      ExplicitHeight = 36
+    end
+    inherited btSair: TBitBtn
+      Left = 347
+      Height = 42
+      ExplicitLeft = 388
+    end
+  end
+  inherited PnlPesquisar: TPanel
+    Top = 42
+    Width = 454
+    Height = 27
+    ExplicitTop = 40
+    ExplicitWidth = 454
+    ExplicitHeight = 27
+    object Label1: TLabel [0]
+      Left = 7
+      Top = 9
+      Width = 92
+      Height = 13
+      Caption = 'Plano de Conta:'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Verdana'
+      Font.Style = []
+      ParentFont = False
+    end
+    inherited btPesquisar: TBitBtn
+      Left = 356
+      Width = 98
+      Height = 27
+      TabOrder = 1
+      ExplicitLeft = 357
+      ExplicitWidth = 98
+      ExplicitHeight = 33
+    end
+    object edtPesquisar: TEdit
+      Left = 115
+      Top = 4
+      Width = 213
+      Height = 21
+      CharCase = ecUpperCase
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Verdana'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+    end
+  end
+  inherited DBGrid1: TDBGrid
+    Top = 69
+    Width = 454
+    Height = 198
+    Font.Charset = ANSI_CHARSET
+    Font.Name = 'Verdana'
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'ID_PLANO'
+        Title.Alignment = taCenter
+        Title.Caption = 'C'#243'digo'
+        Width = 50
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'PLANO'
+        Title.Caption = 'Plano Conta'
+        Width = 250
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'DESCRICAO_TIPO'
+        Title.Alignment = taCenter
+        Title.Caption = 'Tipo'
+        Width = 100
+        Visible = True
+      end>
+  end
+end

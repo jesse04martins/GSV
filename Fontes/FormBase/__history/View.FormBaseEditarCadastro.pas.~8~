@@ -1,0 +1,34 @@
+unit View.FormBaseEditarCadastro;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBase, Vcl.StdCtrls,
+  Vcl.Buttons, Vcl.ExtCtrls;
+
+type
+  TFrmBaseEditarCadastro = class(TFrmBase)
+    pnlRodape: TPanel;
+    btSalvar: TBitBtn;
+    btCancelar: TBitBtn;
+    procedure btCancelarClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmBaseEditarCadastro: TFrmBaseEditarCadastro;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFrmBaseEditarCadastro.btCancelarClick(Sender: TObject);
+begin
+    Close;
+end;
+
+end.

@@ -1,0 +1,42 @@
+unit Controller.Empresa;
+
+interface
+
+uses System.Classes, System.SysUtils, Data.DB, Dao.Interfaces;
+
+type
+  TControllerEmpresa = class
+  private
+    FDataSource : TDataSource;
+    FDao : IDaoRetornarDados;
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    function RetornaDataSource : TDataSource;
+  end;
+
+implementation
+
+{ TControllerEmpresa }
+
+uses Dao.Empresa, Dao.FiltroEmpresa, dbSQL.FireDac.SQLCommand, dbSQL.FireDac.Connection;
+
+constructor TControllerEmpresa.Create(AOwner: TComponent);
+begin
+   FDataSource := TDataSource.Create(AOwner);
+   FDao        := TDaoEmpresa.Create(TFireDacSQLCommand.Create(AOwner, TFireDacConnection.GetInstance));
+end;
+
+destructor TControllerEmpresa.Destroy;
+begin
+   FreeAndNil(FDataSource);
+   inherited;
+end;
+
+function TControllerEmpresa.RetornaDataSource: TDataSource;
+begin
+    FDataSource.DataSet := FDao.Listar(TDaoFiltroEmpresa.Create);
+    Result := FDataSource;
+end;
+
+end.

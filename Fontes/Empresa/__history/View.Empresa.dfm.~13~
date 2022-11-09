@@ -1,0 +1,58 @@
+inherited FrmEmpresa: TFrmEmpresa
+  Caption = 'Cadastro de Empresa'
+  ClientHeight = 362
+  ClientWidth = 417
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  ExplicitWidth = 433
+  ExplicitHeight = 401
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlBotao: TPanel
+    Width = 417
+    ExplicitWidth = 417
+    inherited btNovo: TBitBtn
+      OnClick = btNovoClick
+    end
+    inherited btCorrigir: TBitBtn
+      OnClick = btCorrigirClick
+    end
+    inherited btExcluir: TBitBtn
+      OnClick = btExcluirClick
+    end
+  end
+  inherited PnlPesquisar: TPanel
+    Width = 417
+    Visible = False
+    ExplicitWidth = 417
+    inherited btPesquisar: TBitBtn
+      Left = 321
+      OnClick = btPesquisarClick
+      ExplicitLeft = 321
+    end
+  end
+  inherited DBGrid1: TDBGrid
+    Width = 417
+    Height = 289
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'ID_EMPRESA'
+        Title.Caption = 'C'#243'digo'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'RAZAO_SOCIAL'
+        Title.Caption = 'Raz'#227'o Social'
+        Width = 329
+        Visible = True
+      end>
+  end
+  inherited pnlRodape: TPanel
+    Top = 358
+    Width = 417
+    ExplicitTop = 358
+    ExplicitWidth = 417
+  end
+end

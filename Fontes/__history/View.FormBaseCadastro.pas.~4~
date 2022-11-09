@@ -1,0 +1,34 @@
+unit View.FormBaseCadastro;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBase, Data.DB, Vcl.Grids,
+  Vcl.DBGrids, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls;
+
+type
+  TFrmBaseCadastro = class(TFrmBase)
+    Panel1: TPanel;
+    btNovo: TBitBtn;
+    btCorrigir: TBitBtn;
+    btExcluir: TBitBtn;
+    btImprimir: TBitBtn;
+    btSair: TBitBtn;
+    Panel2: TPanel;
+    BitBtn5: TBitBtn;
+    DBGrid1: TDBGrid;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmBaseCadastro: TFrmBaseCadastro;
+
+implementation
+
+{$R *.dfm}
+
+end.

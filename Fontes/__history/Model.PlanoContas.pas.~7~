@@ -1,0 +1,37 @@
+unit Model.PlanoContas;
+
+interface
+
+type
+  TTipoPlanoConta = (tpcEntrada, tpcSaida);
+
+  TPlanoContas = class
+  private
+    FPlano: string;
+    FTipo: TTipoPlanoConta;
+    FidPlano: Integer;
+  public
+    constructor Create; overload;
+    constructor Create(AIdPlano : Integer; APlano : string; ATipo : TTipoPlanoConta); overload;
+    property IdPlano : Integer read FidPlano write FidPlano;
+    property Plano : string  read FPlano write FPlano;
+    property Tipo: TTipoPlanoConta  read FTipo write FTipo;
+  end;
+
+implementation
+
+{ TPlanoContas }
+
+constructor TPlanoContas.Create;
+begin
+
+end;
+
+constructor TPlanoContas.Create(AIdPlano: Integer; APlano: string; ATipo: TTipoPlanoConta);
+begin
+  FidPlano := AIdPlano;
+  FPlano  := APlano;
+  FTipo   := ATipo;
+end;
+
+end.

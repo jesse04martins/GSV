@@ -1,0 +1,12 @@
+unit uNovoPlanoConta;
+
+interface
+
+uses View.Operacoes.interfaces;
+
+type
+  TViewNovoPlanoContas = TClass(tinter)
+
+implementation
+
+end.

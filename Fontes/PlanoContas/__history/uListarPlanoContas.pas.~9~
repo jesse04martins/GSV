@@ -1,0 +1,41 @@
+unit uListarPlanoContas;
+
+interface
+
+uses System.SysUtils, System.Classes, Interfaces, Dao.PlanoContas,
+     dbSQL.Interfaces, Dao.Interfaces;
+
+type
+  TListarPlanoConta = class(TInterfacedObject, IOperation<IParametroSQL>)
+  private
+    FDB_SQLCommand: iDB_SQLCommand;
+    FDao : iDao<TDaoPlanoConta>;
+  public
+    constructor Create(ADB_SQLCommand : iDB_SQLCommand);
+    destructor Destroy; override;
+    procedure Execute(value : IParametroSQL);
+  end;
+
+
+implementation
+
+{ TListarPlanoConta }
+
+constructor TListarPlanoConta.Create(ADB_SQLCommand: iDB_SQLCommand);
+begin
+   FDB_SQLCommand := ADB_SQLCommand;
+   FDao := TDaoPlanoConta.Create(ADB_SQLCommand.GetOwner, ADB_SQLCommand);
+end;
+
+destructor TListarPlanoConta.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TListarPlanoConta.Execute(value: IParametroSQL);
+begin
+
+end;
+
+end.

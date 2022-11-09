@@ -1,0 +1,31 @@
+unit Controller.Empresa;
+
+interface
+
+uses System.Classes, System.SysUtils, Data.DB;
+
+type
+  TControllerEmpresa = class
+  private
+    FDataSource : TDataSource;
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+  end;
+
+implementation
+
+{ TControllerEmpresa }
+
+constructor TControllerEmpresa.Create(AOwner: TComponent);
+begin
+   FDataSource := TDataSource.Create(AOwner);
+end;
+
+destructor TControllerEmpresa.Destroy;
+begin
+   FreeAndNil(FDataSource);
+   inherited;
+end;
+
+end.

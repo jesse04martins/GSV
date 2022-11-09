@@ -1,0 +1,50 @@
+unit uListarPlanoContas;
+
+interface
+
+uses System.SysUtils, System.classes, View.Operacoes.interfaces, Dao.Interfaces, Dao.PlanoContas, Data.DB,
+     Model.Enum, Dao.FiltroPlanoContas;
+
+type
+  TListarPlanoContas = class(TInterfacedObject, iViewOperacao<TDaoFiltroPlanoContas>)
+  private
+    FDao : iDao<TDaoFiltroPlanoContas>;
+    FFiltro : TDaoFiltroPlanoContas;
+    FDataSource : TDataSource;
+  public
+    constructor Create(AOwner: TComponent; ADataSource : tDataSource);
+    destructor Destroy; override;
+    function Entidade : TDaoFiltroPlanoContas;
+    procedure Executar;
+
+  end;
+
+
+implementation
+
+{ TListarPlanoContas }
+
+constructor TListarPlanoContas.Create(AOwner: TComponent; ADataSource : TDataSource);
+begin
+   FDao := TDaoPlanoConta.Create(AOwner, nil);
+   FFiltro := TDaoFiltroPlanoContas.Create;
+   FDataSource := ADataSource;
+end;
+
+destructor TListarPlanoContas.Destroy;
+begin
+
+   inherited;
+end;
+
+function TListarPlanoContas.Entidade: TDaoFiltroPlanoContas;
+begin
+   Result := FFiltro;
+end;
+
+procedure TListarPlanoContas.Executar;
+begin
+   FDataSource.DataSet := FDao.Listar(FFiltro);
+end;
+
+end.

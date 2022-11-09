@@ -1,0 +1,23 @@
+unit uSalvarCorrecaoPlanoContas;
+
+interface
+
+uses System.SysUtils, System.classes, View.Operacoes.interfaces, Model.PlanoContas, Dao.Interfaces, Dao.PlanoContas;
+
+type
+  TSalvarCorrecaoPlanoContas = class(TInterfacedObject, iViewOperacao<TModelPlanoContas>)
+  private
+    FDao : iDao<TModelPlanoContas>;
+    FEntidade : TModelPlanoContas;
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    function Entidade : TModelPlanoContas;
+    procedure Executar;
+
+  end;
+
+
+implementation
+
+end.

@@ -1,0 +1,49 @@
+unit Model.PlanoContas;
+
+interface
+
+uses System.SysUtils;
+type
+  TTipoPlanoConta = (tpcEntrada, tpcSaida);
+
+  TModelPlanoContas = class
+  private
+    FPlano: string;
+    FTipo: TTipoPlanoConta;
+    FidPlano: Integer;
+  public
+    constructor Create; overload;
+    constructor Create(AIdPlano : Integer; APlano : string; ATipo : TTipoPlanoConta); overload;
+    property IdPlano : Integer read FidPlano write FidPlano;
+    property Plano : string  read FPlano write FPlano;
+    property Tipo: TTipoPlanoConta  read FTipo write FTipo;
+    procedure Validar;
+  end;
+
+implementation
+
+{ TPlanoContas }
+
+constructor TModelPlanoContas.Create;
+begin
+
+end;
+
+constructor TModelPlanoContas.Create(AIdPlano: Integer; APlano: string; ATipo: TTipoPlanoConta);
+begin
+  FidPlano := AIdPlano;
+  FPlano  := APlano;
+  FTipo   := ATipo;
+end;
+
+procedure TModelPlanoContas.Validar;
+begin
+   Result := False;
+
+   if (FPlano.IsEmpty) then
+       raise Exception.Create('Descrição do plsno é obritatório!');
+
+   Result := True;
+end;
+
+end.

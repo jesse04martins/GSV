@@ -1,0 +1,74 @@
+unit Model.FluxosCaixa;
+
+interface
+
+uses System.SysUtils, Model.PlanoContas, Model.Empresa;
+
+type
+   TModelFluxosCaixa = class
+   private
+    FPlanoConta: TModelPlanoContas;
+    FHora: TTime;
+    FEmpresa: TModelEmpresa;
+    FData: TDateTime;
+    FIdCaixa: Integer;
+    FDescricaoLanc: string;
+    FValor: Extended;
+
+   public
+     constructor Create(); overload;
+     constructor Create(pIdCaixa : Integer; pData : TDateTime; pHora : TTime; pPlanoConta : TModelPlanoContas;
+                        pEmpresa : TModelEmpresa; pDescricaoLanc : string; pValor : Extended);
+
+     property IdCaixa: Integer read FIdCaixa write FIdCaixa;
+     property Data: TDateTime read FData write FData;
+     property Hora: TTime  read FHora write FHora;
+     property PlanoConta: TModelPlanoContas  read FPlanoConta write FPlanoConta;
+     property Empresa: TModelEmpresa  read FEmpresa write FEmpresa;
+     property DescricaoLanc: string  read FDescricaoLanc write FDescricaoLanc;
+     property Valor: Extended read FValor write FValor;
+     procedure Validar;
+
+   end;
+
+implementation
+
+{ TModelFluxosCaixa }
+
+constructor TModelFluxosCaixa.Create;
+begin
+
+end;
+
+constructor TModelFluxosCaixa.Create(pIdCaixa: Integer; pData: TDateTime; pHora: TTime;
+                                      pPlanoConta: TModelPlanoContas; pEmpresa: TModelEmpresa;
+                                      pDescricaoLanc: string; pValor: Extended);
+begin
+    FIdCaixa       := pIdCaixa;
+    FData          := pData;
+    FHora          := pHora;
+    FPlanoConta    := pPlanoConta;
+    FEmpresa       := pEmpresa;
+    FDescricaoLanc := pDescricaoLanc;
+    FValor         := pValor;
+end;
+
+procedure TModelFluxosCaixa.Validar;
+begin
+   if (Assigned(FPlanoConta) = False) or (FPlanoConta.IdPlano) then
+       raise Exception.Create('O plano de contas não foi informado!');
+
+   if (Assigned(FEmpresa) = false) or (FEmpresa.IdEmpresa) then
+       raise Exception.Create('A empresa não foi informado!');
+
+   if (FDescricaoLanc.IsEmpty) then
+       raise Exception.Create('A descrição do lançamento é obrigatório!');
+
+    if (FDescricaoLanc.Length > 255) then
+        raise Exception.Create('Não é permitido a descrição com mais de 255 carácteres! ');
+
+   if (FValor <=0) then
+       raise Exception.Create('Valor menor ou igual a Zero não é permitido!');
+end;
+
+end.

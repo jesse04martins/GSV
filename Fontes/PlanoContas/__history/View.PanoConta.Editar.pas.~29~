@@ -1,0 +1,52 @@
+unit View.PanoConta.Editar;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBaseEditarCadastro, Interfaces,
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Model.PlanoContas, Model.Enum;
+
+type
+  TFrmPlanoContasEditar = class(TFrmBaseEditarCadastro)
+    Label1: TLabel;
+    edtPlano: TEdit;
+    cbTipo: TComboBox;
+    Label2: TLabel;
+    procedure btSalvarClick(Sender: TObject);
+  private
+    FOperacao : IOperation<TModelPlanoContas>;
+    FModel : TModelPlanoContas;
+  public
+    constructor Create(AOwner: TComponent; AOperacao : IOperation<TModelPlanoContas>);
+  end;
+
+var
+  FrmPlanoContasEditar: TFrmPlanoContasEditar;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFrmPlanoContasEditar.btSalvarClick(Sender: TObject);
+begin
+    try
+       FModel.Plano := edtPlano.Text;
+       FModel.Tipo  := TTipoPlanoConta(cbTipo.ItemIndex);
+       FOperacao.Execute(FModel);
+    except on e : Exception do
+       begin
+          Application.MessageBox(PChar(e.Message), 'Aviso', MB_ICONEXCLAMATION);
+       end;
+    end;
+    ModalResult := mrOk;
+end;
+
+constructor TFrmPlanoContasEditar.Create(AOwner: TComponent; AOperacao : IOperation<TModelPlanoContas>);
+begin
+   inherited Create(AOwner);
+   FOperacao := AOperacao;
+   FModel    := (FOperacao as IGetValueOperation<TModelPlanoContas>).GetValue;
+end;
+
+end.

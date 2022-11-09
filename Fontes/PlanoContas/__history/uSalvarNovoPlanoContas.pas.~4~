@@ -1,0 +1,52 @@
+unit uSalvarNovoPlanoConta;
+
+interface
+
+uses System.SysUtils, System.Classes, Interfaces, Model.PlanoContas, Dao.PlanoContas,
+     dbSQL.Interfaces;
+
+type
+  TSalvarNovoPlanoConta = class(TInterfacedObject, IOperation<TModelPlanoContas>, IGetValueOperation<TModelPlanoContas>)
+  private
+    FDB_SQLCommand: iDB_SQLCommand;
+    FModel : TModelPlanoContas;
+  public
+    constructor Create(ADB_SQLCommand : iDB_SQLCommand);
+    destructor Destroy; override;
+    procedure Execute(value : TModelPlanoContas);
+    function GetValue : TModelPlanoContas;
+  end;
+
+implementation
+
+{ TNovoPlanoConta }
+
+constructor TSalvarNovoPlanoConta.Create(ADB_SQLCommand: iDB_SQLCommand);
+begin
+   FDB_SQLCommand := ADB_SQLCommand;
+   FModel := TModelPlanoContas.Create;
+end;
+
+destructor TSalvarNovoPlanoConta.Destroy;
+begin
+   FreeAndNil(FModel);
+   inherited;
+end;
+
+procedure TSalvarNovoPlanoConta.Execute(value: TModelPlanoContas);
+begin
+   try
+      TDaoPlanoConta.Create(FDB_SQLCommand.GetOwner, FDB_SQLCommand).Inserir(value);
+   except on e : Exception do
+       begin
+          raise Exception.Create(e.Message);
+       end;
+   end;
+end;
+
+function TSalvarNovoPlanoConta.GetValue: TModelPlanoContas;
+begin
+   Result := FModel;
+end;
+
+end.

@@ -1,0 +1,68 @@
+unit uSalvarCorrecaoPlanoContas;
+
+interface
+
+uses System.SysUtils, System.classes, View.Operacoes.interfaces, Model.PlanoContas, Dao.Interfaces, Dao.PlanoContas, Data.DB,
+     Model.Enum;
+
+type
+  TSalvarCorrecaoPlanoContas = class(TInterfacedObject, iViewOperacao<TModelPlanoContas>)
+  private
+    FDao : iDao<TModelPlanoContas>;
+    FEntidade : TModelPlanoContas;
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    function Entidade : TModelPlanoContas;
+    procedure Executar;
+    function CarregarEntidade(pDataSet : TDataSet) : iViewOperacao<TModelPlanoContas>;
+
+  end;
+
+
+implementation
+
+{ TSalvarCorrecaoPlanoContas }
+
+function TSalvarCorrecaoPlanoContas.CarregarEntidade(
+  pDataSet: TDataSet): iViewOperacao<TModelPlanoContas>;
+begin
+   if (Assigned(pDataSet) = False) then begin
+       Exit;
+   end;
+
+   FEntidade.IdPlano :=  pDataSet.FieldByName('id_plano').AsInteger;
+   FEntidade.Plano   :=  pDataSet.FieldByName('plano').AsString;
+   FEntidade.Tipo    := TTipoPlanoConta(pDataSet.FieldByName('id_plano').AsInteger);
+end;
+
+constructor TSalvarCorrecaoPlanoContas.Create(AOwner: TComponent);
+begin
+   FDao := TDaoPlanoConta.Create(AOwner, nil);
+   FEntidade := TModelPlanoContas.Create;
+end;
+
+destructor TSalvarCorrecaoPlanoContas.Destroy;
+begin
+   FreeAndNil(FEntidade);
+   inherited;
+end;
+
+function TSalvarCorrecaoPlanoContas.Entidade: TModelPlanoContas;
+begin
+    Result := FEntidade;
+end;
+
+procedure TSalvarCorrecaoPlanoContas.Executar;
+begin
+   try
+      FDao.Inserir(FEntidade);
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+
+end;
+
+end.

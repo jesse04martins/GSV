@@ -1,0 +1,10 @@
+unit Model.Enum;
+
+interface
+
+type
+   TTipoPlanoConta = (tpcEntrada, tpcSaida);
+
+implementation
+
+end.

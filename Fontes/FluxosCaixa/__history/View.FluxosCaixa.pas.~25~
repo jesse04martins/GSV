@@ -1,0 +1,108 @@
+unit View.FluxosCaixa;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBaseCadastro, Data.DB, dbSQL.Interfaces,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.ComCtrls, Dao.Interfaces;
+
+type
+  TfrmFluxosCaixa = class(TFrmBaseCadastro)
+    Label1: TLabel;
+    cbPlanoContas: TComboBox;
+    dtpInicio: TDateTimePicker;
+    Label2: TLabel;
+    Label3: TLabel;
+    dtpFim: TDateTimePicker;
+    Label4: TLabel;
+    cbEmpresa: TComboBox;
+    procedure btPesquisarClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure btNovoClick(Sender: TObject);
+    procedure btCorrigirClick(Sender: TObject);
+    procedure btExcluirClick(Sender: TObject);
+  private
+    FDB_SQLCommand : iDB_SQLCommand;
+    FDao : IDaoRetornarDados;
+  public
+    { Public declarations }
+  end;
+
+var
+  frmFluxosCaixa: TfrmFluxosCaixa;
+
+implementation
+
+{$R *.dfm}
+
+uses View.FluxosCaixa.Editar, Dao.FiltroFluxosCaixa,  Dao.FluxosCaixa, Model.FluxosCaixa,
+     Model.Empresa, Model.PlanoContas;
+
+procedure TfrmFluxosCaixa.FormCreate(Sender: TObject);
+begin
+   FDao := TDaoFluxosCaixa.Create(FDB_SQLCommand);
+
+end;
+
+procedure TfrmFluxosCaixa.btCorrigirClick(Sender: TObject);
+var
+  lForm : TfrmFluxosCaixaEditar;
+begin
+   lForm := TfrmFluxosCaixaEditar.Create(self, (FDao as IDaoAtulizarDados<TModelFluxosCaixa>), DataSource1.DataSet);
+   try
+      lForm.ShowModal;
+   finally
+      FreeAndNil(lForm);
+   end;
+end;
+
+procedure TfrmFluxosCaixa.btExcluirClick(Sender: TObject);
+begin
+   try
+      (FDao as IDaoAtulizarDados<TModelFluxosCaixa>).Excluir(DataSource1.DataSet.FieldByName('id_plano').AsInteger);
+   except on e : Exception do
+      begin
+         Application.MessageBox(PChar(e.Message), 'Aviso', MB_ICONEXCLAMATION);
+      end;
+   end;
+
+end;
+
+procedure TfrmFluxosCaixa.btNovoClick(Sender: TObject);
+var
+  lForm : TfrmFluxosCaixaEditar;
+begin
+   lForm := TfrmFluxosCaixaEditar.Create(self, (FDao as IDaoAtulizarDados<TModelFluxosCaixa>));
+   try
+      lForm.ShowModal;
+   finally
+      FreeAndNil(lForm);
+   end;
+end;
+
+procedure TfrmFluxosCaixa.btPesquisarClick(Sender: TObject);
+var
+   lFiltro : TDaoFiltroFluxosCaixa;
+begin
+   try
+      lFiltro := TDaoFiltroFluxosCaixa.Create
+                                      .ComPeriodoData(dtpInicio.DateTime, dtpFim.DateTime);
+
+       if (cbPlanoContas.ItemIndex > 0) then begin
+           lFiltro.&And.ComIdPlano(TModelPlanoContas(cbPlanoContas.Items[cbPlanoContas.ItemIndex]).IdPlano)
+       end;
+
+       if (cbEmpresa.ItemIndex > 0) then begin
+           lFiltro.&And.ComIdEmpresa(TModelEmpresa(cbEmpresa.Items[cbEmpresa.ItemIndex]).IdEmpresa)
+       end;
+       DataSource1.DataSet := FDao.Listar(lFiltro);
+
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+end;
+
+end.

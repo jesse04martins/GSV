@@ -1,0 +1,126 @@
+unit Dao.Empresa;
+
+interface
+
+uses System.SysUtils, System.classes, Dao.Interfaces, Model.Empresa, dbSQL.Interfaces, Data.DB,
+     System.Generics.Collections;
+
+type
+//  IEmpresaDao = Interface
+//    ['{AB4D62F7-8BFD-4455-9A3A-C0ADF279A594}']
+//    procedure Inserir(pEmpresa : TModelEmpresa);
+//    procedure Alterar(pEmpresa : TModelEmpresa);
+//    procedure Excluir(pIdEmpresa : integer);
+//    function Listar(pIdEmpresa : integer) : TDataSet; overload;
+//    function Listar(pRazaoSocial : string = '%') : TDataSet; overload;
+//  End;
+
+  TEmpresaDao<TModelEmpresa> = class(TInterfacedObject, iDao<TModelEmpresa>)
+  private
+    FdbCommand : iDB_SQLCommand;
+    function ExecuteCommand(pCriterio : string) : TDataSet;
+  public
+    constructor Create(AOwner: TComponent; ADB_SQLCommand : iDB_SQLCommand);
+    procedure Inserir(value: TModelEmpresa);
+    procedure Alterar(value: TModelEmpresa);
+    procedure Excluir(pId: integer);
+    function Listar(value : TModelEmpresa) : TDataSet;
+  end;
+
+implementation
+
+
+constructor TEmpresaDao<TModelEmpresa>.Create(AOwner: TComponent; ADB_SQLCommand: iDB_SQLCommand);
+begin
+   FdbCommand := ADB_SQLCommand;
+end;
+
+procedure TEmpresaDao<TModelEmpresa>.Alterar(value: TModelEmpresa);
+begin
+   try
+      value.Validar;
+
+      FdbCommand.ExecutarSQL
+         (
+            'update EMPRESA set RAZAO_SOCIAL = ' + value.RazaoSocial.QuotedString + ', ' + sLineBreak +
+            '    NOME_FANTASIA = ' + value.NomeFantasia.QuotedString + sLineBreak +
+            'where (ID_EMPRESA = ' + value.IdEmpresa.ToString + ')'
+         );
+   except on e : Exception do
+       begin
+           raise Exception.Create(e.Message);
+       end;
+   end;
+
+end;
+
+//
+//procedure TEmpresaDao.Excluir(pIdEmpresa: Integer);
+//begin
+//   try
+//      FdbCommand.ExecutarSQL('delete from EMPRESA where (ID_EMPRESA = ' + pIdEmpresa.ToString + ')');
+//   except on e : Exception do
+//       begin
+//           raise Exception.Create(e.Message);
+//       end;
+//   end;
+//end;
+//
+//function TEmpresaDao.ExecuteCommand(pCriterio: string): TDataSet;
+//begin
+//   try
+//      Result := FdbCommand.ExecutarSelect('select ID_EMPRESA, RAZAO_SOCIAL, NOME_FANTASIA from EMPRESA ' + pCriterio + ' order by razao_social');
+//   except on e : Exception do
+//       begin
+//           raise Exception.Create(e.Message);
+//       end;
+//   end;
+//
+//end;
+//
+//procedure TEmpresaDao.Inserir(pEmpresa: TModelEmpresa);
+//begin
+//   try
+//      pEmpresa.Validar;
+//
+//      FdbCommand.ExecutarSelect('insert into EMPRESA (RAZAO_SOCIAL, NOME_FANTASIA)' + sLineBreak +
+//                                'values (' + pEmpresa.RazaoSocial.QuotedString+ ', ' + pEmpresa.NomeFantasia.QuotedString +')');
+//   except on e : Exception do
+//       begin
+//           raise Exception.Create(e.Message);
+//       end;
+//   end;
+//
+//end;
+//
+//function TEmpresaDao.Listar(pIdEmpresa: integer): TDataSet;
+//begin
+//   Result := ExecuteCommand(' where (id_empresa = ' + pIdEmpresa.ToString +')' )
+//end;
+//
+//function TEmpresaDao.Listar(pRazaoSocial: string): TDataSet;
+//begin
+//   Result := ExecuteCommand(' where (Razao_social like ' + QuotedStr(pRazaoSocial + '%') + ')')
+//end;
+//
+procedure TEmpresaDao<TModelEmpresa>.Excluir(pId: integer);
+begin
+
+end;
+
+function TEmpresaDao<TModelEmpresa>.ExecuteCommand(pCriterio: string): TDataSet;
+begin
+
+end;
+
+procedure TEmpresaDao<TModelEmpresa>.Inserir(value: TModelEmpresa);
+begin
+
+end;
+
+function TEmpresaDao<TModelEmpresa>.Listar(value: TModelEmpresa): TDataSet;
+begin
+
+end;
+
+end.

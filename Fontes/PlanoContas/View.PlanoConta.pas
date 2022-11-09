@@ -1,0 +1,134 @@
+unit View.PlanoConta;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBaseCadastro, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids,
+  Vcl.Buttons, Vcl.ExtCtrls, Controller.PlanoContas;
+
+type
+  TfrmPlanoContas = class(TFrmBaseCadastro)
+    Label1: TLabel;
+    edtPesquisar: TEdit;
+    procedure btPesquisarClick(Sender: TObject);
+    procedure btExcluirClick(Sender: TObject);
+    procedure btNovoClick(Sender: TObject);
+    procedure btCorrigirClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+  private
+    FController : TControllerPlanoContas;
+    function PossueDadosNoDataSet: Boolean;
+  public
+    { Public declarations }
+  end;
+
+var
+  frmPlanoContas: TfrmPlanoContas;
+
+implementation
+
+{$R *.dfm}
+
+uses View.PlanoConta.Editar;
+
+procedure TfrmPlanoContas.FormCreate(Sender: TObject);
+begin
+    FController := TControllerPlanoContas.Create(Self);
+end;
+
+procedure TfrmPlanoContas.FormDestroy(Sender: TObject);
+begin
+   FreeAndNil(FController);
+end;
+
+procedure TfrmPlanoContas.FormShow(Sender: TObject);
+begin
+   btPesquisarClick(nil);
+end;
+
+function TfrmPlanoContas.PossueDadosNoDataSet: Boolean;
+begin
+    Result := False;
+
+    if (Assigned(DBGrid1.DataSource) = False) or (Assigned(DBGrid1.DataSource.DataSet) = False) then begin
+       Exit;
+    end;
+
+    if (DBGrid1.DataSource.DataSet.RecordCount = 0) then begin
+        Application.MessageBox('Nenhum plano de contas cadastrado!', 'Aviso', MB_ICONEXCLAMATION);
+        Exit;
+    end;
+
+    Result := True;
+end;
+
+
+procedure TfrmPlanoContas.btExcluirClick(Sender: TObject);
+begin
+   if (PossueDadosNoDataSet = False) then
+       Exit;
+
+   try
+
+       if (Application.MessageBox('Deseja excluir plano de contas?', 'Aviso', MB_ICONQUESTION + MB_YESNO + MB_DEFBUTTON2) = IDNO) then
+           Exit;
+
+       FController.ExcluirPlano;
+       DBGrid1.SetFocus;
+   except on e : Exception do
+      begin
+         Application.MessageBox(PChar(e.Message), 'Aviso', MB_ICONEXCLAMATION);
+      end;
+   end;
+end;
+
+procedure TfrmPlanoContas.btNovoClick(Sender: TObject);
+var
+  lForm : TFrmPlanoContasEditar;
+begin
+   if (Assigned(DBGrid1.DataSource) = False) or (Assigned(DBGrid1.DataSource.DataSet) = False) then begin
+       Exit;
+   end;
+
+   lForm := TFrmPlanoContasEditar.Create(self, FController);
+   try
+      if (lForm.ShowModal = mrOk) then begin
+          DBGrid1.SetFocus;
+      end;
+   finally
+      FreeAndNil(lForm);
+   end;
+end;
+
+procedure TfrmPlanoContas.btCorrigirClick(Sender: TObject);
+var
+  lForm : TFrmPlanoContasEditar;
+begin
+    if (PossueDadosNoDataSet = False) then
+        Exit;
+
+    lForm := TFrmPlanoContasEditar.Create(self, FController, DBGrid1.DataSource.DataSet);
+    try
+        if (lForm.ShowModal = mrOk) then begin
+            DBGrid1.SetFocus;
+        end;
+    finally
+       FreeAndNil(lForm);
+    end;
+end;
+
+procedure TfrmPlanoContas.btPesquisarClick(Sender: TObject);
+begin
+   try
+     DBGrid1.DataSource := FController.RetornarDataSource(edtPesquisar.Text);
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+end;
+
+end.

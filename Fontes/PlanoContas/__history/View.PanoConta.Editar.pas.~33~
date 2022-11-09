@@ -1,0 +1,60 @@
+unit View.PanoConta.Editar;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBaseEditarCadastro,Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  Model.PlanoContas, Dao.interfaces, Model.Enum;
+
+type
+  TFrmPlanoContasEditar = class(TFrmBaseEditarCadastro)
+    Label1: TLabel;
+    edtPlano: TEdit;
+    cbTipo: TComboBox;
+    Label2: TLabel;
+    procedure btSalvarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+  private
+    FDao : iDao<TModelPlanoContas>;
+    FModel : TModelPlanoContas;
+  public
+    constructor Create(AOwner: TComponent; ADao : iDao<TModelPlanoContas>);
+  end;
+
+var
+  FrmPlanoContasEditar: TFrmPlanoContasEditar;
+
+implementation
+
+{$R *.dfm}
+
+
+procedure TFrmPlanoContasEditar.btSalvarClick(Sender: TObject);
+begin
+//    try
+//       FModel.Plano := edtPlano.Text;
+//       FModel.Tipo  := TTipoPlanoConta(cbTipo.ItemIndex);
+//       FOperacao.Execute(FModel);
+//    except on e : Exception do
+//       begin
+//          Application.MessageBox(PChar(e.Message), 'Aviso', MB_ICONEXCLAMATION);
+//       end;
+//    end;
+//    ModalResult := mrOk;
+end;
+
+constructor TFrmPlanoContasEditar.Create(AOwner: TComponent; ADao : iDao<TModelPlanoContas>);
+begin
+   inherited Create(AOwner);
+   FDao   := ADao;
+   FModel := TModelPlanoContas.Create;
+end;
+
+procedure TFrmPlanoContasEditar.FormShow(Sender: TObject);
+begin
+   edtPlano.Text    := FModel.Plano;
+   cbTipo.ItemIndex := Integer(FModel.Tipo);
+end;
+
+end.

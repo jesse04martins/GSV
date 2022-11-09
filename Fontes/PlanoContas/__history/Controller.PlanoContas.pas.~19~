@@ -1,0 +1,101 @@
+unit Controller.PlanoContas;
+
+interface
+
+uses System.Classes, System.SysUtils, Data.DB, Dao.Interfaces, Model.PlanoContas, Model.Enum;
+
+type
+
+  TControllerPlanoContas = class
+    private
+      FDataSource : TDataSource;
+      FDao : IDaoRetornarDados;
+      function VerificarSePossuiFluxosCaixa : Boolean;
+    public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    function RetornarDataSource(pPlano : string) : TDataSource;
+    procedure ExcluirPlano;
+    procedure SalvarPlano(value : TModelPlanoContas; enumSalvar : TEnumSalvarDados);
+  end;
+
+implementation
+
+{ TControllerPlanoContas }
+
+uses Dao.PlanoContas, dbSQL.FireDac.SQLCommand, dbSQL.FireDac.Connection, Dao.FiltroPlanoContas,
+     Dao.FluxosCaixa, Dao.FiltroFluxosCaixa;
+
+constructor TControllerPlanoContas.Create(AOwner: TComponent);
+begin
+   FDataSource     := TDataSource.Create(AOwner);
+   FDao            := TDaoPlanoConta.Create(TFireDacSQLCommand.Create(AOwner, TFireDacConnection.GetInstance));
+
+end;
+
+destructor TControllerPlanoContas.Destroy;
+begin
+  FreeAndNil(FDataSource);
+  inherited;
+end;
+
+procedure TControllerPlanoContas.ExcluirPlano;
+begin
+   try
+      if (VerificarSePossuiFluxosCaixa) then
+          raise Exception.Create('Já existe lançamento de fluxos de caixa para este plano de contas por isso não será possível excluí-lo.');
+
+
+      (FDao as IDaoAtulizarDados<TModelPlanoContas>).Excluir(FDataSource.DataSet.FieldByName('id_plano').AsInteger);
+      FDataSource.DataSet.Refresh;
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+end;
+
+function TControllerPlanoContas.RetornarDataSource(pPlano: string): TDataSource;
+begin
+   FDataSource.DataSet := FDao.Listar(TDaoFiltroPlanoContas.Create.ComDescricaoPlano(pPlano));
+   Result := FDataSource;
+end;
+
+procedure TControllerPlanoContas.SalvarPlano(value: TModelPlanoContas; enumSalvar: TEnumSalvarDados);
+begin
+   try
+      value.Validar;
+
+      case enumSalvar of
+        enCadastrar: (FDao as IDaoAtulizarDados<TModelPlanoContas>).Inserir(value);
+        enCorrigir: (FDao as IDaoAtulizarDados<TModelPlanoContas>).Alterar(value);
+      end;
+
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+
+end;
+
+function TControllerPlanoContas.VerificarSePossuiFluxosCaixa: Boolean;
+var
+   lDaoFluxos : IDaoRetornarDados;
+begin
+   Result := False;
+
+   try
+      lDaoFluxos := TDaoFluxosCaixa.Create(TFireDacSQLCommand.Create(FDataSource.Owner, TFireDacConnection.GetInstance));
+
+      Result := (lDaoFluxos.Listar(TDaoFiltroFluxosCaixa.Create.ComIdPlano(FDataSource.DataSet.FieldByName('id_plano').AsInteger)).RecordCount >0)
+   except on e : Exception do
+      begin
+         raise Exception.Create(e.Message);
+      end;
+   end;
+
+
+end;
+
+end.

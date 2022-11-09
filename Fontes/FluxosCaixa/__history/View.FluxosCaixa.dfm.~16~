@@ -1,0 +1,209 @@
+inherited frmFluxosCaixa: TfrmFluxosCaixa
+  Caption = 'Fluxos de Caixa'
+  ClientHeight = 471
+  ClientWidth = 703
+  OnCreate = FormCreate
+  ExplicitWidth = 719
+  ExplicitHeight = 510
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlBotao: TPanel
+    Width = 703
+    ExplicitWidth = 703
+    inherited btNovo: TBitBtn
+      OnClick = btNovoClick
+    end
+    inherited btCorrigir: TBitBtn
+      OnClick = btCorrigirClick
+    end
+  end
+  inherited PnlPesquisar: TPanel
+    Width = 703
+    Height = 52
+    ExplicitWidth = 703
+    ExplicitHeight = 52
+    object Label1: TLabel [0]
+      Left = 34
+      Top = 11
+      Width = 74
+      Height = 13
+      Caption = 'Plano Conta:'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Verdana'
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label2: TLabel [1]
+      Left = 418
+      Top = 11
+      Width = 21
+      Height = 13
+      Caption = 'De:'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Verdana'
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label3: TLabel [2]
+      Left = 426
+      Top = 33
+      Width = 13
+      Height = 13
+      Caption = 'A:'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Verdana'
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label4: TLabel [3]
+      Left = 49
+      Top = 33
+      Width = 55
+      Height = 13
+      Caption = 'Empresa:'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Verdana'
+      Font.Style = []
+      ParentFont = False
+    end
+    inherited btPesquisar: TBitBtn
+      Left = 607
+      Height = 52
+      OnClick = btPesquisarClick
+      ExplicitLeft = 607
+      ExplicitHeight = 52
+    end
+    object cbPlanoContas: TComboBox
+      Left = 123
+      Top = 4
+      Width = 253
+      Height = 21
+      Style = csDropDownList
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Verdana'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+    end
+    object dtpInicio: TDateTimePicker
+      Left = 452
+      Top = 4
+      Width = 91
+      Height = 21
+      Date = 44768.836791886580000000
+      Time = 44768.836791886580000000
+      TabOrder = 2
+    end
+    object dtpFim: TDateTimePicker
+      Left = 451
+      Top = 27
+      Width = 91
+      Height = 21
+      Date = 44768.836791886580000000
+      Time = 44768.836791886580000000
+      TabOrder = 3
+    end
+    object cbEmpresa: TComboBox
+      Left = 123
+      Top = 27
+      Width = 253
+      Height = 21
+      Style = csDropDownList
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Verdana'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+    end
+  end
+  inherited DBGrid1: TDBGrid
+    Top = 94
+    Width = 703
+    Height = 251
+    Columns = <
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'DATA'
+        Title.Alignment = taCenter
+        Title.Caption = 'Data'
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'HORA'
+        Title.Alignment = taCenter
+        Title.Caption = 'Hora'
+        Width = 80
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'ID_CAIXA'
+        Title.Alignment = taCenter
+        Title.Caption = 'C'#243'digo'
+        Width = 60
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'DESCRICAO_LANC'
+        Title.Caption = 'Descri'#231#227'o de Lan'#231'amento'
+        Width = 340
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'VALOR'
+        Title.Alignment = taCenter
+        Title.Caption = 'Valor'
+        Width = 100
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'ID_PLANO'
+        Title.Alignment = taCenter
+        Title.Caption = 'Plano'
+        Width = 50
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'ID_EMPRESA'
+        Title.Alignment = taCenter
+        Title.Caption = 'Empresa'
+        Width = 60
+        Visible = True
+      end>
+  end
+  inherited pnlRodape: TPanel
+    Top = 345
+    Width = 703
+    Height = 126
+    ExplicitTop = 345
+    ExplicitWidth = 703
+    ExplicitHeight = 126
+  end
+  inherited DataSource1: TDataSource
+    Left = 400
+    Top = 280
+  end
+end

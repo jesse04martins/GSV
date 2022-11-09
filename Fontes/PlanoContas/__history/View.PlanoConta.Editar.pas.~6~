@@ -1,0 +1,100 @@
+unit View.PlanoConta.Editar;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBaseEditarCadastro,Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  Model.PlanoContas, Dao.interfaces, Data.DB, Controller.PlanoContas;
+
+type
+  TFrmPlanoContasEditar = class(TFrmBaseEditarCadastro)
+    Label1: TLabel;
+    edtPlano: TEdit;
+    cbTipo: TComboBox;
+    Label2: TLabel;
+    procedure FormShow(Sender: TObject);
+    procedure btSalvarClick(Sender: TObject);
+  private
+    FController : TControllerPlanoContas;
+    FModel : TModelPlanoContas;
+    FEnumSalvarDados : TEnumSalvarDados;
+    procedure EventoSalvarCorrecao(Sender: TObject);
+    procedure EventoSalvarInsercao(Sender: TObject);
+
+  public
+    constructor Create(AOwner: TComponent; AController : TControllerPlanoContas); overload;
+    constructor Create(AOwner: TComponent; AController : TControllerPlanoContas; ADataSet : TDataSet); overload;
+  end;
+
+var
+  FrmPlanoContasEditar: TFrmPlanoContasEditar;
+
+implementation
+
+{$R *.dfm}
+
+uses Model.Enum;
+
+
+constructor TFrmPlanoContasEditar.Create(AOwner: TComponent;  AController : TControllerPlanoContas);
+begin
+   inherited Create(AOwner);
+
+   Self.Caption := 'Cadastrar Plano de Contas';
+
+   FController := AController;
+   FModel := TModelPlanoContas.Create;
+   btSalvar.OnClick := EventoSalvarInsercao;
+   FEnumSalvarDados := enCadastrar;
+end;
+constructor TFrmPlanoContasEditar.Create(AOwner: TComponent;  AController : TControllerPlanoContas; ADataSet: TDataSet);
+begin
+   inherited Create(AOwner);
+
+   FEnumSalvarDados := enCorrigir;
+   Self.Caption := 'Corrigir Plano de Contas';
+
+   FController  := AController;
+   FModel := TModelPlanoContas.Create;
+
+   FModel.IdPlano := ADataSet.FieldByName('id_plano').AsInteger;
+   FModel.Plano   := ADataSet.FieldByName('plano').AsString;
+   FModel.Tipo    := TTipoPlanoConta(ADataSet.FieldByName('tipo').AsInteger);
+
+   btSalvar.OnClick := EventoSalvarCorrecao;
+end;
+
+
+procedure TFrmPlanoContasEditar.btSalvarClick(Sender: TObject);
+begin
+    FModel.Plano := edtPlano.Text;
+    FModel.Tipo  := TTipoPlanoConta(cbTipo.ItemIndex);
+    try
+       FController.SalvarPlano(FModel, FEnumSalvarDados);
+       ModalResult := mrOk;
+    except on e : Exception do
+       begin
+          Application.MessageBox(PChar(e.Message), 'Aviso', MB_ICONEXCLAMATION);
+       end;
+    end;
+
+end;
+
+procedure TFrmPlanoContasEditar.EventoSalvarCorrecao(Sender: TObject);
+begin
+
+end;
+
+procedure TFrmPlanoContasEditar.EventoSalvarInsercao(Sender: TObject);
+begin
+
+end;
+
+procedure TFrmPlanoContasEditar.FormShow(Sender: TObject);
+begin
+   edtPlano.Text    := FModel.Plano;
+   cbTipo.ItemIndex := Integer(FModel.Tipo);
+end;
+
+end.

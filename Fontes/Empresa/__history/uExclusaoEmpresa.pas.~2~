@@ -1,0 +1,48 @@
+unit uExclusaoEmpresa;
+
+interface
+
+uses System.SysUtils, System.Classes, Interfaces, dbSQL.Interfaces, Dao.Interfaces, Model.Empresa;
+
+type
+  TExclluirEmpresa = class(TInterfacedObject, IOperation<Integer>)
+  private
+    FDB_SQLCommand: iDB_SQLCommand;
+    FDao : iDao<TModelEmpresa>;
+  public
+    constructor Create(ADB_SQLCommand : iDB_SQLCommand);
+    destructor Destroy; override;
+    procedure Execute(value : Integer);
+  end;
+
+
+implementation
+
+{ TExclluirEmpresa }
+
+uses Dao.Empresa
+
+constructor TExclluirEmpresa.Create(ADB_SQLCommand: iDB_SQLCommand);
+begin
+   FDB_SQLCommand := ADB_SQLCommand;
+   FDao := TDaoEmpresa.Create(ADB_SQLCommand.GetOwner, ADB_SQLCommand);
+end;
+
+destructor TExclluirEmpresa.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TExclluirEmpresa.Execute(value: Integer);
+begin
+    try
+       FDao.Excluir(value);
+    except on e : Exception do
+       begin
+           raise Exception.Create(e.Message);
+       end;
+    end;
+end;
+
+end.

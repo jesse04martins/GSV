@@ -1,0 +1,22 @@
+unit Dao.Parametro;
+
+interface
+
+uses System.SysUtils, System.Generics.Collections;
+
+type
+  iDaoParamento<T> = interface
+    ['{9E821491-E134-453D-9765-D43BF2A5F8A7}']
+    function ToString : string;
+  end;
+
+  TDaoParametro<T> = class(TInterfacedObject, iDaoParamento<T>)
+  private
+    FValue : T;
+  public
+
+  end;
+
+implementation
+
+end.

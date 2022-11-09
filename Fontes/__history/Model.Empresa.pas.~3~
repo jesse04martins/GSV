@@ -1,0 +1,43 @@
+unit Model.Empresa;
+
+interface
+
+type
+  TModelEmpresa = class
+  private
+    FIdEmpresa: integer;
+    FRazaoSocial: string;
+    FNomeFantasia: string;
+
+  public
+    constructor Create; overload;
+    constructor Create(AIdEmpresa : Integer; ARazaoSocial, ANomeFantasia : string); overload;
+    property IdEmpresa: integer  read FIdEmpresa write FIdEmpresa;
+    property RazaoSocial: string read FRazaoSocial write FRazaoSocial;
+    property NomeFantasia: string read FNomeFantasia write FNomeFantasia;
+    function Validar : Boolean;
+  end;
+
+implementation
+
+{ TModelEmpresa }
+
+
+{ TModelEmpresa }
+
+constructor TModelEmpresa.Create;
+begin
+
+end;
+
+constructor TModelEmpresa.Create(AIdEmpresa: Integer; ARazaoSocial, ANomeFantasia: string);
+begin
+
+end;
+
+function TModelEmpresa.Validar: Boolean;
+begin
+
+end;
+
+end.

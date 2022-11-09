@@ -1,0 +1,54 @@
+unit uListarPlanoContas;
+
+interface
+
+uses System.SysUtils, System.Classes, Interfaces, dbSQL.Interfaces, Dao.Interfaces, Model.PlanoContas,
+     Data.DB;
+
+type
+  TListarPlanoConta = class(TInterfacedObject, IOperation<IParametroSQL>)
+  private
+    FDB_SQLCommand: iDB_SQLCommand;
+    FDao : iDao<TModelPlanoContas>;
+    FDataSource : TDataSource;
+  public
+    constructor Create(ADB_SQLCommand : iDB_SQLCommand; ADataSource : TDataSource);
+    destructor Destroy; override;
+    procedure Execute(value : IParametroSQL);
+  end;
+
+implementation
+
+{ TListarPlanoConta }
+
+uses Dao.PlanoContas;
+
+constructor TListarPlanoConta.Create(ADB_SQLCommand: iDB_SQLCommand; ADataSource : TDataSource);
+begin
+   FDB_SQLCommand := ADB_SQLCommand;
+   FDao           := TDaoPlanoConta.Create(ADB_SQLCommand.GetOwner, ADB_SQLCommand);
+   FDataSource    := ADataSource;
+end;
+
+destructor TListarPlanoConta.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TListarPlanoConta.Execute(value: IParametroSQL);
+begin
+   if (Assigned(FDataSource) = False) then begin
+       raise Exception.Create('DataSorce Não foi instanciada!');
+   end;
+
+   try
+     FDataSource.DataSet := FDao.Listar(value);
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+end;
+
+end.

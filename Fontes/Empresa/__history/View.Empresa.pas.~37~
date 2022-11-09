@@ -1,0 +1,117 @@
+unit View.Empresa;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBaseCadastro, Data.DB,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Controller.Empresa;
+
+type
+  TFrmEmpresa = class(TFrmBaseCadastro)
+    procedure btPesquisarClick(Sender: TObject);
+    procedure btExcluirClick(Sender: TObject);
+    procedure btNovoClick(Sender: TObject);
+    procedure btCorrigirClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+  private
+    FController : TControllerEmpresa;
+  public
+    { Public decalarations }
+  end;
+
+var
+  FrmEmpresa: TFrmEmpresa;
+
+implementation
+
+{$R *.dfm}
+
+uses View.Empresa.Editar;
+
+procedure TFrmEmpresa.FormCreate(Sender: TObject);
+begin
+   FController := TControllerEmpresa.Create(Self);
+end;
+
+procedure TFrmEmpresa.FormDestroy(Sender: TObject);
+begin
+   FreeAndNil(FController);
+end;
+
+procedure TFrmEmpresa.FormShow(Sender: TObject);
+begin
+   btPesquisarClick(nil);
+   DBGrid1.SetFocus;
+end;
+
+procedure TFrmEmpresa.btCorrigirClick(Sender: TObject);
+var
+  lForm : TFrmEmpresaEditar;
+begin
+   if (Assigned(DBGrid1.DataSource) = False) or (Assigned(DBGrid1.DataSource.DataSet) = False) then begin
+       Exit;
+   end;
+
+   lForm := TFrmEmpresaEditar.Create(self, FController, DBGrid1.DataSource.DataSet);
+   try
+     IF (lForm.ShowModal = mrOk) then
+         DBGrid1.SetFocus;
+   finally
+      FreeAndNil(lForm);
+   end;
+end;
+
+procedure TFrmEmpresa.btNovoClick(Sender: TObject);
+var
+  lForm : TFrmEmpresaEditar;
+begin
+   if (Assigned(DBGrid1.DataSource) = False) or (Assigned(DBGrid1.DataSource.DataSet) = False) then begin
+       Exit;
+   end;
+
+   lForm := TFrmEmpresaEditar.Create(self, FController);
+   try
+     IF (lForm.ShowModal = mrOk) then
+         DBGrid1.SetFocus;
+   finally
+      FreeAndNil(lForm);
+   end;
+end;
+
+procedure TFrmEmpresa.btExcluirClick(Sender: TObject);
+begin
+   try
+       if (Assigned(DBGrid1.DataSource) = False) or (Assigned( DBGrid1.DataSource.DataSet) = False) then
+           Exit;
+
+       if (DBGrid1.DataSource.DataSet.RecordCount = 0) then
+           raise Exception.Create('Plano de contas não encontrado! ');
+
+       if (Application.MessageBox('Deseja excluir cadastro de empresa?', 'Aviso', MB_ICONQUESTION + MB_YESNO + MB_DEFBUTTON2) = IDNO) then
+           Exit;
+
+       FController.Excluir;
+       DBGrid1.SetFocus;
+
+   except on e : Exception do
+      begin
+         Application.MessageBox(PChar(e.Message), 'Aviso', MB_ICONEXCLAMATION);
+      end;
+   end;
+end;
+
+procedure TFrmEmpresa.btPesquisarClick(Sender: TObject);
+begin
+   try
+      DBGrid1.DataSource := FController.RetornaDataSource;
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+end;
+
+end.

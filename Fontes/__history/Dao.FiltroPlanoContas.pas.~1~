@@ -1,0 +1,21 @@
+unit Dao.FiltroPlanoContas;
+
+interface
+
+uses System.SysUtils, Dao.Parametro;
+
+type
+  TDaoFiltroPlanoContas = class(TInterfacedObject, iParametroSQL)
+  private
+
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function ComCodigoPlano(value : integer) :  TDaoFiltroPlanoContas;
+    function ComDescricaoPlano(plano : string) : TDaoFiltroPlanoContas;
+    function ComTipoPlano()
+  end;
+
+implementation
+
+end.

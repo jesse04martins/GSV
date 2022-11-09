@@ -1,0 +1,80 @@
+unit Controller.Empresa;
+
+interface
+
+uses System.Classes, System.SysUtils, Data.DB, Dao.Interfaces, Model.Empresa, Model.Enum;
+
+type
+  TControllerEmpresa = class
+  private
+    FDataSource : TDataSource;
+    FDao : IDaoRetornarDados;
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    function RetornaDataSource : TDataSource;
+    procedure Salvar(value: TModelEmpresa; enumSalvar: TEnumSalvarDados);
+    function VerificarSePossuiFluxosCaixa: Boolean;
+  end;
+
+implementation
+
+{ TControllerEmpresa }
+
+uses Dao.Empresa, Dao.FiltroEmpresa, dbSQL.FireDac.SQLCommand, dbSQL.FireDac.Connection;
+
+constructor TControllerEmpresa.Create(AOwner: TComponent);
+begin
+   FDataSource := TDataSource.Create(AOwner);
+   FDao        := TDaoEmpresa.Create(TFireDacSQLCommand.Create(AOwner, TFireDacConnection.GetInstance));
+end;
+
+destructor TControllerEmpresa.Destroy;
+begin
+   FreeAndNil(FDataSource);
+   inherited;
+end;
+
+function TControllerEmpresa.RetornaDataSource: TDataSource;
+begin
+    FDataSource.DataSet := FDao.Listar(TDaoFiltroEmpresa.Create);
+    Result := FDataSource;
+end;
+
+procedure TControllerEmpresa.Salvar(value: TModelEmpresa; enumSalvar: TEnumSalvarDados);
+begin
+   try
+      value.Validar;
+
+      case enumSalvar of
+        enCadastrar: (FDao as IDaoAtulizarDados<TModelEmpresa>).Inserir(value);
+        enCorrigir: (FDao as IDaoAtulizarDados<TModelEmpresa>).Alterar(value);
+      end;
+
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+
+end;
+
+function TControllerEmpresa.VerificarSePossuiFluxosCaixa: Boolean;
+var
+   lDaoFluxos : IDaoRetornarDados;
+begin
+   Result := False;
+
+   try
+      lDaoFluxos := TDaoFluxosCaixa.Create(TFireDacSQLCommand.Create(FDataSource.Owner, TFireDacConnection.GetInstance));
+
+      Result := (lDaoFluxos.Listar(TDaoFiltroFluxosCaixa.Create.ComIdPlano(FDataSource.DataSet.FieldByName('id_plano').AsInteger)).RecordCount >0)
+   except on e : Exception do
+      begin
+         raise Exception.Create(e.Message);
+      end;
+   end;
+end;
+
+
+end.

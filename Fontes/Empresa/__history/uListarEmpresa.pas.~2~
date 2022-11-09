@@ -1,0 +1,55 @@
+unit uListarEmpresa;
+
+interface
+
+uses System.SysUtils, System.Classes, Interfaces, dbSQL.Interfaces, Dao.Interfaces, Model.Empresa,
+     Data.DB;
+
+type
+  TListarEmpresa = class(TInterfacedObject, IOperation<IParametroSQL>)
+  private
+    FDB_SQLCommand: iDB_SQLCommand;
+    FDao : iDao<TModelEmpresa>;
+    FDataSource : TDataSource;
+  public
+    constructor Create(ADB_SQLCommand : iDB_SQLCommand; ADataSource : TDataSource);
+    destructor Destroy; override;
+    procedure Execute(value : IParametroSQL);
+  end;
+
+implementation
+
+{ TListarEmpresa }
+
+uses Dao.Empresa;
+
+constructor TListarEmpresa.Create(ADB_SQLCommand: iDB_SQLCommand; ADataSource: TDataSource);
+begin
+   FDB_SQLCommand := ADB_SQLCommand;
+   FDao           := TDaoEmpresa.Create(ADB_SQLCommand.GetOwner, ADB_SQLCommand);
+   FDataSource    := ADataSource;
+end;
+
+destructor TListarEmpresa.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TListarEmpresa.Execute(value: IParametroSQL);
+begin
+   if (Assigned(FDataSource) = False) then begin
+       raise Exception.Create('DataSorce Não foi instanciada!');
+   end;
+
+   try
+     FDataSource.DataSet := FDao.Listar(value);
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+
+end;
+
+end.

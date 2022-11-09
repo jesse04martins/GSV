@@ -1,0 +1,75 @@
+unit Dao.FiltroFluxosCaixa;
+
+interface
+
+uses System.SysUtils, Interfaces, Model.Enum;
+
+type
+  TDaoFiltroFluxosCaixa = class(TInterfacedObject, iParametroSQL)
+  private
+    FFiltroSQL : string;
+  public
+    function ComIdCaixa(pIdCaixa : integer) :  TDaoFiltroFluxosCaixa;
+    function ComIdPlano(pIdPlano : integer) :  TDaoFiltroFluxosCaixa;
+    function ComIdEmpresa(pIdEmpresa : integer) :  TDaoFiltroFluxosCaixa;
+    function ComPeriodoData(pDataInicio, pDataFim : TDateTime) : TDaoFiltroFluxosCaixa;
+    function &And : TDaoFiltroFluxosCaixa;
+    function &Or: TDaoFiltroFluxosCaixa;
+    function ToString: string;
+    destructor Destroy; override;
+  end;
+
+implementation
+
+{ TDaoFiltroFluxosCaixa }
+
+function TDaoFiltroFluxosCaixa.&And: TDaoFiltroFluxosCaixa;
+begin
+   FFiltroSQL := FFiltroSQL + '  and ';
+   Result := Self;
+end;
+
+function TDaoFiltroFluxosCaixa.&Or: TDaoFiltroFluxosCaixa;
+begin
+   FFiltroSQL := FFiltroSQL + '  or ';
+   Result := Self;
+end;
+
+function TDaoFiltroFluxosCaixa.ComIdCaixa(pIdCaixa: integer): TDaoFiltroFluxosCaixa;
+begin
+   FFiltroSQL := FFiltroSQL + '(ID_CAIXA = ' + pIdCaixa.ToString +')' ;
+   Result := Self;
+end;
+
+function TDaoFiltroFluxosCaixa.ComIdEmpresa(pIdEmpresa: integer): TDaoFiltroFluxosCaixa;
+begin
+   FFiltroSQL := FFiltroSQL + '(ID_EMPRESA = ' + pIdEmpresa.ToString +')' ;
+   Result := Self;
+end;
+
+function TDaoFiltroFluxosCaixa.ComIdPlano(pIdPlano: integer): TDaoFiltroFluxosCaixa;
+begin
+   FFiltroSQL := FFiltroSQL + '(ID_PLANO = ' + pIdPlano.ToString +')' ;
+   Result := Self;
+
+end;
+
+function TDaoFiltroFluxosCaixa.ComPeriodoData(pDataInicio, pDataFim: TDateTime): TDaoFiltroFluxosCaixa;
+begin
+   FFiltroSQL := FFiltroSQL + '(DATA BETWEEN ' + FormatDateTime('DD.MM.YYYY', pDataInicio).QuotedString + ' and ' + FormatDateTime('DD.MM.YYYY', pDataFim).QuotedString +')' ;
+   Result := Self;
+end;
+
+destructor TDaoFiltroFluxosCaixa.Destroy;
+begin
+
+  inherited;
+end;
+
+function TDaoFiltroFluxosCaixa.ToString: string;
+begin
+   Result := ' where ' + FFiltroSQL;
+   FFiltroSQL := '';
+end;
+
+end.

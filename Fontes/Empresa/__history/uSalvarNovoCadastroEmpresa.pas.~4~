@@ -1,0 +1,47 @@
+unit uSalvarNovoCadastroEmpresa;
+
+interface
+
+uses System.SysUtils, System.Classes, Interfaces, Model.Empresa, Dao.Empresa,
+     dbSQL.Interfaces;
+
+type
+  TSalvarNovoPlanoConta = class(TInterfacedObject, IOperation<TModelEmpresa>, IGetValueOperation<TModelEmpresa>)
+  private
+    FDB_SQLCommand: iDB_SQLCommand;
+    FModel : TModelEmpresa;
+  public
+    constructor Create(ADB_SQLCommand : iDB_SQLCommand);
+    destructor Destroy; override;
+    procedure Execute(value : TModelEmpresa);
+    function GetValue : TModelEmpresa;
+  end;
+
+
+implementation
+
+{ TSalvarNovoPlanoConta }
+
+constructor TSalvarNovoPlanoConta.Create(ADB_SQLCommand: iDB_SQLCommand);
+begin
+   FDB_SQLCommand := ADB_SQLCommand;
+   FModel := TModelEmpresa.Create;
+end;
+
+destructor TSalvarNovoPlanoConta.Destroy;
+begin
+   FreeAndNil(FModel);
+   inherited;
+end;
+
+procedure TSalvarNovoPlanoConta.Execute(value: TModelEmpresa);
+begin
+
+end;
+
+function TSalvarNovoPlanoConta.GetValue: TModelEmpresa;
+begin
+
+end;
+
+end.

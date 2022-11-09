@@ -1,0 +1,49 @@
+unit Model.FluxosCaixa;
+
+interface
+
+uses System.SysUtils, Model.PlanoContas, Model.Empresa;
+
+type
+   TModelFluxosCaixa = class
+   private
+    FPlanoConta: TModelPlanoContas;
+    FHora: TTime;
+    FEmpresa: TModelEmpresa;
+    FData: TDateTime;
+    FIdCaixa: Integer;
+    FDescricaoLanc: string;
+    FValor: Extended;
+
+   public
+
+     property IdCaixa: Integer read FIdCaixa write FIdCaixa;
+     property Data: TDateTime read FData write FData;
+     property Hora: TTime  read FHora write FHora;
+     property PlanoConta: TModelPlanoContas  read FPlanoConta write FPlanoConta;
+     property Empresa: TModelEmpresa  read FEmpresa write FEmpresa;
+     property DescricaoLanc: string  read FDescricaoLanc write FDescricaoLanc;
+     property Valor: Extended read FValor write FValor;
+     procedure Validar;
+
+   end;
+
+implementation
+
+{ TModelFluxosCaixa }
+
+procedure TModelFluxosCaixa.Validar;
+begin
+   if (Assigned(FPlanoConta) = False) or (FPlanoConta.IdPlano) then
+       raise Exception.Create('O plano de contas não foi informado!');
+
+   if (FDescricaoLanc.IsEmpty) then
+       raise Exception.Create('A descrição do lançamento é obrigatório!');
+
+   if (FValor <=0) then
+       raise Exception.Create('Valor menor ou igual a Zero não é permitido!');
+
+
+end;
+
+end.

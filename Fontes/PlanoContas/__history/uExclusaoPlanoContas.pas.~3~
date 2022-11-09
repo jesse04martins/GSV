@@ -1,0 +1,46 @@
+unit uExclusaoPlanoContas;
+
+interface
+
+uses System.SysUtils, System.Classes, Interfaces, dbSQL.Interfaces, Dao.Interfaces, Model.PlanoContas;
+
+type
+  TExclluirPlanoConta = class(TInterfacedObject, IOperation<Integer>)
+  private
+    FDB_SQLCommand: iDB_SQLCommand;
+    FDao : iDao<TModelPlanoContas>;
+  public
+    constructor Create(ADB_SQLCommand : iDB_SQLCommand);
+    destructor Destroy; override;
+    procedure Execute(value : Integer);
+  end;
+
+
+implementation
+
+{ TExclluirPlanoConta }
+
+constructor TExclluirPlanoConta.Create(ADB_SQLCommand: iDB_SQLCommand);
+begin
+   FDB_SQLCommand := ADB_SQLCommand;
+   FDao := tda
+end;
+
+destructor TExclluirPlanoConta.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TExclluirPlanoConta.Execute(value: Integer);
+begin
+    try
+
+    except on e : Exception do
+       begin
+           raise Exception.Create(e.Message);
+       end;
+    end;
+end;
+
+end.

@@ -1,0 +1,143 @@
+unit Dao.FluxoaCaixa;
+
+interface
+
+
+uses System.SysUtils, System.classes, Model.FluxosCaixa, dbSQL.Interfaces, Data.DB;
+
+type
+  IFluxosCaixaDao = Interface
+    ['{AB4D62F7-8BFD-4455-9A3A-C0ADF279A594}']
+    procedure Inserir(pFluxosCaixa : TModelFluxosCaixa);
+    procedure Alterar(pFluxosCaixa : TModelFluxosCaixa);
+    procedure Excluir(pIdCaixa : integer);
+    function Listar(pIdCaixa : integer) : TDataSet; overload;
+    function Listar(pDataInicio, pDataFim : TDateTime; pIdEmpresa : Integer = 0; pIdPlanoConta : Integer = 0) : TDataSet; overload;
+    function Listar(pDataInicio, pDataFim : TDateTime; pIdPlanoConta : Integer = 0) : TDataSet; overload;
+  End;
+
+  TFluxosCaixaDao = class(TInterfacedObject, IFluxosCaixaDao)
+  private
+    FdbCommand : iDB_SQLCommand;
+    function ExecuteCommand(pCriterio : string) : TDataSet;
+  public
+    constructor Create(ADB_SQLCommand : iDB_SQLCommand);
+    procedure Inserir(pFluxosCaixa : TModelFluxosCaixa);
+    procedure Alterar(pFluxosCaixa : TModelFluxosCaixa);
+    procedure Excluir(pIdCaixa : integer);
+    function Listar(pIdCaixa : integer) : TDataSet; overload;
+    function Listar(pDataInicio, pDataFim : TDateTime; pIdEmpresa : Integer = 0; pIdPlanoConta : Integer = 0) : TDataSet; overload;
+    function Listar(pDataInicio, pDataFim : TDateTime; pIdPlanoConta : Integer = 0) : TDataSet; overload;
+  end;
+
+
+implementation
+
+{ TFluxosCaixaDao }
+
+procedure TFluxosCaixaDao.Alterar(pFluxosCaixa: TModelFluxosCaixa);
+begin
+   try
+      pFluxosCaixa.Validar;
+
+      FdbCommand.ExecutarSQL
+         (
+          'update FLUXO_CAIXA' + sLineBreak +
+          'set DATA = ' + QuotedStr(FormatDateTime('dd.mm.yyyy', pFluxosCaixa.Data)) + ',' + sLineBreak +
+          '    HORA = ' + QuotedStr(FormatDateTime('hh:mm:ss', pFluxosCaixa.Hora)) + ',' + sLineBreak +
+          '    ID_PLANO = ' + pFluxosCaixa.PlanoConta.IdPlano.ToString + ',' + sLineBreak +
+          '    DESCRICAO_LANC = ' + pFluxosCaixa.DescricaoLanc.QuotedString + ',' + sLineBreak +
+          '    VALOR = ' + pFluxosCaixa.Valor.ToString.Replace(',', '.') + ',' + sLineBreak +
+          '    ID_EMPRESA = ' + pFluxosCaixa.Empresa.IdEmpresa.ToString+ sLineBreak +
+          'where (ID_CAIXA = ' + pFluxosCaixa.IdCaixa.ToString + ')'
+         );
+   except on e : Exception do
+       begin
+           raise Exception.Create(e.Message);
+       end;
+   end;
+
+end;
+
+constructor TFluxosCaixaDao.Create(ADB_SQLCommand: iDB_SQLCommand);
+begin
+   FdbCommand := ADB_SQLCommand;
+end;
+
+procedure TFluxosCaixaDao.Excluir(pIdCaixa: integer);
+begin
+   try
+      FdbCommand.ExecutarSQL
+         (
+           'delete from FLUXO_CAIXA where (ID_CAIXA = ' + pIdCaixa.ToString + ')'
+         );
+   except on e : Exception do
+       begin
+           raise Exception.Create(e.Message);
+       end;
+   end;
+end;
+
+procedure TFluxosCaixaDao.Inserir(pFluxosCaixa: TModelFluxosCaixa);
+begin
+   try
+
+      FdbCommand.ExecutarSQL
+         (
+          'insert into FLUXO_CAIXA (DATA, HORA, ID_PLANO, DESCRICAO_LANC, VALOR, ID_EMPRESA)' + sLineBreak +
+          'values (' + QuotedStr(FormatDateTime('dd.mm.yyyy', pFluxosCaixa.Data)) + ', ' + QuotedStr(FormatDateTime('hh:mm:ss', pFluxosCaixa.Hora)) +' ,' + sLineBreak +
+                     pFluxosCaixa.PlanoConta.IdPlano.ToString + ', ' + pFluxosCaixa.DescricaoLanc.QuotedString +', '+ sLineBreak +
+                     pFluxosCaixa.Valor.ToString.Replace(',', '.') +', ' + pFluxosCaixa.Empresa.IdEmpresa.ToString
+         );
+   except on e : Exception do
+       begin
+           raise Exception.Create(e.Message);
+       end;
+   end;
+end;
+
+function TFluxosCaixaDao.Listar(pDataInicio, pDataFim: TDateTime; pIdPlanoConta: Integer): TDataSet;
+var
+   lCriterio : string;
+begin
+   lCriterio := 'where (data between ' + QuotedStr(FormatDateTime('dd.mm.yyyy', pDataInicio)) + ' and ' + QuotedStr(FormatDateTime('dd.mm.yyyy', pDataFim)) +')' + sLineBreak +
+                ' and (ic_plano = ' + pIdPlanoConta.ToString + ')';
+end;
+
+function TFluxosCaixaDao.Listar(pDataInicio, pDataFim: TDateTime; pIdEmpresa, pIdPlanoConta: Integer): TDataSet;
+var
+   lCriterio : string;
+begin
+    lCriterio := 'where (data between ' + QuotedStr(FormatDateTime('dd.mm.yyyy', pDataInicio)) + ' and ' + QuotedStr(FormatDateTime('dd.mm.yyyy', pDataFim)) +')';
+
+    if (pIdEmpresa >0) then
+        lCriterio := lCriterio + sLineBreak + ' and (id_empresa = ' + pIdEmpresa.ToString + ')';
+
+    if (pIdPlanoConta >0) then
+        lCriterio := lCriterio + sLineBreak + ' and (id_plano = ' + pIdPlanoConta.ToString + ')' ;
+
+    Result := ExecuteCommand(lCriterio)
+end;
+
+function TFluxosCaixaDao.ExecuteCommand(pCriterio: string): TDataSet;
+begin
+   try
+     Result := FdbCommand.ExecutarSelect
+         (
+            'select ID_CAIXA, DATA, HORA, ID_PLANO, DESCRICAO_LANC, VALOR, ID_EMPRESA from FLUXO_CAIXA ' + pCriterio
+         );
+   except on e : Exception do
+       begin
+           raise Exception.Create(e.Message);
+       end;
+   end;
+
+end;
+
+
+function TFluxosCaixaDao.Listar(pIdCaixa: integer): TDataSet;
+begin
+   Result := ExecuteCommand(' where Id_caixa = ' +pIdCaixa.ToString)
+end;
+
+end.

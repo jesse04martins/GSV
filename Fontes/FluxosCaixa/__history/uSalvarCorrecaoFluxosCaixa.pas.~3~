@@ -1,0 +1,67 @@
+unit uSalvarCorrecaoFluxosCaixa;
+
+interface
+
+uses System.SysUtils, System.Classes, Model.FluxosCaixa, Dao.FluxosCaixa,
+     dbSQL.Interfaces, Data.DB, Model.Enum, Interfaces;
+
+type
+  TSalvarCorrecaoEmpresa = class(TInterfacedObject, IOperation<TModelFluxosCaixa>, IGetValueOperation<TModelFluxosCaixa>)
+  private
+    FDB_SQLCommand: iDB_SQLCommand;
+    FModel : TModelFluxosCaixa;
+    procedure CarregarEmpresa;
+  public
+    constructor Create(pDataSet: TDataSet; ADB_SQLCommand : iDB_SQLCommand);
+    destructor Destroy; override;
+    procedure Execute(value : TModelFluxosCaixa);
+    function GetValue : TModelFluxosCaixa;
+  end;
+
+
+
+implementation
+
+{ TSalvarCorrecaoEmpresa }
+
+procedure TSalvarCorrecaoEmpresa.CarregarEmpresa;
+var
+  lDataSource : TDataSource;
+
+begin
+   lDataSource := TDataSource.Create(nil);
+   try
+
+   finally
+      FreeAndNil(lDataSource);
+   end;
+end;
+
+constructor TSalvarCorrecaoEmpresa.Create(pDataSet: TDataSet; ADB_SQLCommand: iDB_SQLCommand);
+begin
+   FDB_SQLCommand := ADB_SQLCommand;
+
+   FModel.IdCaixa    := pDataSet.FieldByName('id_cixa').AsInteger;
+   FModel.Data       := pDataSet.FieldByName('data').AsDateTime;
+   FModel.Hora       := pDataSet.FieldByName('hora').AsDateTime;
+   FModel.DescricaoLanc := pDataSet.FieldByName('Descricao_lanc').AsString;
+   FModel.Valor         := pDataSet.FieldByName('valor').AsFloat;
+end;
+
+destructor TSalvarCorrecaoEmpresa.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TSalvarCorrecaoEmpresa.Execute(value: TModelFluxosCaixa);
+begin
+
+end;
+
+function TSalvarCorrecaoEmpresa.GetValue: TModelFluxosCaixa;
+begin
+
+end;
+
+end.

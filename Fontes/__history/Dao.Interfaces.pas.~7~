@@ -1,0 +1,19 @@
+unit Dao.Interfaces;
+
+interface
+
+uses System.Generics.Collections, Data.DB, Interfaces;
+
+type
+
+  iDao<T> = interface
+    ['{B28BC29D-B93C-421E-A052-16E17C931C87}']
+    function Listar(pParametro : iParametroSQL) : TDataSet;
+    procedure Inserir(pEntidade : T);
+    procedure Alterar(pEntidade : T);
+    procedure Excluir(pId : integer);
+  end;
+
+implementation
+
+end.

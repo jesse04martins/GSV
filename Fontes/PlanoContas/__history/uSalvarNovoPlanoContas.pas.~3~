@@ -1,0 +1,45 @@
+unit uSalvarNovoPlanoContas;
+
+interface
+
+uses System.SysUtils, System.classes, View.Operacoes.interfaces, Model.PlanoContas, Dao.Interfaces, Dao.PlanoContas;
+
+type
+  TSalvarNovoPlanoContas = class(TInterfacedObject, iViewOperacao<TModelPlanoContas>)
+  private
+    FDao : iDao<TModelPlanoContas>;
+    FEntidade : TModelPlanoContas;
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    function Entidade : TModelPlanoContas;
+    procedure Executar(value : TModelPlanoContas);
+
+  end;
+
+implementation
+
+{ TSalvarNovoPlanoContas }
+
+constructor TSalvarNovoPlanoContas.Create(AOwner: TComponent);
+begin
+   FDao := TDaoPlanoConta.Create(AOwner, nil);
+end;
+
+destructor TSalvarNovoPlanoContas.Destroy;
+begin
+  inherited;
+end;
+
+procedure TSalvarNovoPlanoContas.Executar(value : TModelPlanoContas);
+begin
+   try
+      FDao.Alterar(value);
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+end;
+
+end.

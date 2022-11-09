@@ -1,0 +1,84 @@
+unit View.Empresa.Editar;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBaseEditarCadastro, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  Model.Empresa, Dao.Interfaces, Data.DB, Controller.Empresa, Model.Enum;
+
+type
+  TFrmEmpresaEditar = class(TFrmBaseEditarCadastro)
+    edtRasaoSocial: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    edtNomeFantasia: TEdit;
+    procedure FormShow(Sender: TObject);
+    procedure btSalvarClick(Sender: TObject);
+  private
+    FController : TControllerEmpresa;
+    FModel : TModelEmpresa;
+    FEnumSalvarDados : TEnumSalvarDados;
+  public
+    constructor Create(AOwner: TComponent; AController : TControllerEmpresa); overload;
+    constructor Create(AOwner: TComponent; AController : TControllerEmpresa; ADataSet : tdataset); overload;
+  end;
+
+var
+  FrmEmpresaEditar: TFrmEmpresaEditar;
+
+implementation
+
+{$R *.dfm}
+
+constructor TFrmEmpresaEditar.Create(AOwner: TComponent; AController : TControllerEmpresa);
+begin
+   inherited Create(AOwner);
+
+   Self.Caption := 'Nova Empresa';
+
+   FModel := TModelEmpresa.Create;
+   FController   := AController;
+
+   edtRasaoSocial.Text  := FModel.RazaoSocial;
+   edtNomeFantasia.Text := FModel.NomeFantasia;
+   FEnumSalvarDados     : enCadastrar;
+end;
+
+constructor TFrmEmpresaEditar.Create(AOwner: TComponent; AController : TControllerEmpresa; ADataSet: tdataset);
+begin
+   inherited Create(AOwner);
+
+   Self.Caption := 'Corrigir Empresa';
+   FController  := AController;
+   FModel := TModelEmpresa.Create;
+
+   FModel.IdEmpresa    := ADataSet.FieldByName('id_empresa').AsInteger;
+   FModel.NomeFantasia := ADataSet.FieldByName('nome_fantasia').AsString;
+   FModel.RazaoSocial  := ADataSet.FieldByName('razao_social').AsString;
+   FEnumSalvarDados    := enCorrigir;
+end;
+
+
+procedure TFrmEmpresaEditar.FormShow(Sender: TObject);
+begin
+   edtRasaoSocial.Text  := FModel.RazaoSocial;
+   edtNomeFantasia.Text := FModel.NomeFantasia;
+end;
+
+procedure TFrmEmpresaEditar.btSalvarClick(Sender: TObject);
+begin
+   FModel.RazaoSocial  := edtRasaoSocial.Text;
+   FModel.NomeFantasia := edtNomeFantasia.Text;
+
+   try
+       FController.Salvar(FModel, FEnumSalvarDados);
+       ModalResult := mrOk;
+   except on e : Exception do
+       begin
+          Application.MessageBox(PChar(e.Message), 'Aviso', MB_ICONEXCLAMATION);
+       end;
+   end;
+end;
+
+end.

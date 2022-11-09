@@ -1,0 +1,70 @@
+inherited FrmEmpresaEditar: TFrmEmpresaEditar
+  Caption = 'Cadastrar Empresa'
+  ClientHeight = 179
+  ClientWidth = 447
+  OnShow = FormShow
+  ExplicitWidth = 453
+  ExplicitHeight = 208
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel [0]
+    Left = 20
+    Top = 35
+    Width = 78
+    Height = 13
+    Caption = 'Raz'#227'o Social:'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Verdana'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label2: TLabel [1]
+    Left = 11
+    Top = 82
+    Width = 88
+    Height = 13
+    Caption = 'Nome Fantasia:'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Verdana'
+    Font.Style = []
+    ParentFont = False
+  end
+  inherited pnlRodape: TPanel
+    Top = 123
+    Width = 447
+    TabOrder = 2
+    ExplicitTop = 123
+    ExplicitWidth = 447
+    inherited btSalvar: TBitBtn
+      Left = 203
+      OnClick = btSalvarClick
+      ExplicitLeft = 203
+    end
+    inherited btCancelar: TBitBtn
+      Left = 323
+      ExplicitLeft = 323
+    end
+  end
+  object edtRasaoSocial: TEdit
+    Left = 106
+    Top = 27
+    Width = 281
+    Height = 21
+    CharCase = ecUpperCase
+    MaxLength = 50
+    TabOrder = 0
+  end
+  object edtNomeFantasia: TEdit
+    Left = 106
+    Top = 74
+    Width = 281
+    Height = 21
+    CharCase = ecUpperCase
+    MaxLength = 50
+    TabOrder = 1
+  end
+end

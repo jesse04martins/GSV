@@ -1,0 +1,109 @@
+unit Dao.PlanoContas;
+
+interface
+
+uses System.SysUtils, System.classes, Model.PlanoContas, dbSQL.Interfaces, Data.DB;
+
+type
+  IPlanoContaDao = Interface
+    ['{AB4D62F7-8BFD-4455-9A3A-C0ADF279A594}']
+    procedure Inserir(pPlanoContas : TModelPlanoContas);
+    procedure Alterar(pPlanoContas : TModelPlanoContas);
+    procedure Excluir(pIdPlano : integer);
+    function Listar(pIdPlano : integer) : TDataSet; overload;
+    function Listar(pPlano : string = '%') : TDataSet; overload;
+  End;
+
+  TDaoPlanoConta = class(TInterfacedObject, IPlanoContaDao)
+  private
+    FdbCommand : iDB_SQLCommand;
+    function ExecuteCommand(pCriterio : string) : TDataSet;
+  public
+    constructor Create(AOwner: TComponent; ADB_SQLCommand : iDB_SQLCommand);
+    procedure Inserir(pPlanoContas: TModelPlanoContas);
+    procedure Alterar(pPlanoContas: TModelPlanoContas);
+    procedure Excluir(pIdPlano: Integer);
+    function Listar(pIdPlano: Integer): TDataSet;  overload;
+    function Listar(pPlano : string = '%') : TDataSet; overload;
+
+  end;
+
+implementation
+
+{ TípoContaDao }
+
+procedure TDaoPlanoConta.Alterar(pPlanoContas: TModelPlanoContas);
+begin
+   try
+      pPlanoContas.Validar;
+
+      FdbCommand.ExecutarSQL
+         ('update PLANO_CONTAS' + sLineBreak +
+          'set PLANO = ' + pPlanoContas.Plano.QuotedString + ',' + sLineBreak +
+          '    TIPO  = ' + Integer(pPlanoContas.Tipo).ToString + sLineBreak +
+          'where (ID_PLANO = ' + pPlanoContas.IdPlano.ToString +')'
+         );
+   except on e : Exception do
+       begin
+           raise Exception.Create(e.Message);
+       end;
+   end;
+end;
+
+constructor TDaoPlanoConta.Create(AOwner: TComponent; ADB_SQLCommand: iDB_SQLCommand);
+begin
+   FdbCommand := ADB_SQLCommand;
+end;
+
+procedure TDaoPlanoConta.Excluir(pIdPlano: Integer);
+begin
+   try
+      FdbCommand.ExecutarSQL( 'delete from PLANO_CONTAS where (ID_PLANO = ' + pIdPlano.ToString +')');
+   except on e : Exception do
+       begin
+           raise Exception.Create(e.Message);
+       end;
+   end;
+
+end;
+
+function TDaoPlanoConta.ExecuteCommand(pCriterio: string) : TDataSet;
+begin
+   try
+     Result := FdbCommand.ExecutarSelect('select ID_PLANO, PLANO, TIPO from PLANO_CONTAS ' + pCriterio + ' order by plano');
+   except on e : Exception do
+       begin
+           raise Exception.Create(e.Message);
+       end;
+   end;
+
+end;
+
+procedure TDaoPlanoConta.Inserir(pPlanoContas: TModelPlanoContas);
+begin
+   try
+      pPlanoContas.Validar;
+
+      FdbCommand.ExecutarSQL
+      ('insert into PLANO_CONTAS (PLANO, TIPO)' + sLineBreak +
+       'values (' + pPlanoContas.Plano.QuotedString + ', ' + Integer(pPlanoContas.Tipo).ToString
+      );
+   except on e : Exception do
+       begin
+           raise Exception.Create(e.Message);
+       end;
+   end;
+
+end;
+
+function TDaoPlanoConta.Listar(pIdPlano: Integer): TDataSet;
+begin
+   Result := ExecuteCommand('Where (id_plano = ' + pIdPlano.ToString +')')
+end;
+
+function TDaoPlanoConta.Listar(pPlano: string): TDataSet;
+begin
+   Result := ExecuteCommand('where (plano like ' + QuotedStr(pPlano +'%') + ')')
+end;
+
+end.

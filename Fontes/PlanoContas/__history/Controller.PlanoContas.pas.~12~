@@ -1,0 +1,81 @@
+unit Controller.PlanoContas;
+
+interface
+
+uses System.Classes, System.SysUtils, Data.DB, Dao.Interfaces, Model.PlanoContas, Vcl.Forms, Winapi.Windows;
+
+type
+  TEnumSalvarDados = (enCadastrar, enCorrigir);
+  TControllerPlanoContas = class
+    private
+      FDataSource : TDataSource;
+      FDao : IDaoRetornarDados;
+    public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    function RetornarDataSource(pPlano : string) : TDataSource;
+    procedure ExcluirPlano;
+    procedure SalvarPlano(value : TModelPlanoContas; enumSalvar : TEnumSalvarDados);
+  end;
+
+implementation
+
+{ TControllerPlanoContas }
+
+uses Dao.PlanoContas, dbSQL.FireDac.SQLCommand, dbSQL.FireDac.Connection, Dao.FiltroPlanoContas;
+
+constructor TControllerPlanoContas.Create(AOwner: TComponent);
+begin
+   FDataSource := TDataSource.Create(AOwner);
+   FDao := TDaoPlanoConta.Create(TFireDacSQLCommand.Create(AOwner, TFireDacConnection.GetInstance));
+end;
+
+destructor TControllerPlanoContas.Destroy;
+begin
+  FreeAndNil(FDataSource);
+  inherited;
+end;
+
+procedure TControllerPlanoContas.ExcluirPlano;
+begin
+   try
+      if (Assigned(FDataSource.DataSet) = False) or (FDataSource.DataSet.Active = False) or (FDataSource.DataSet.RecordCount = 0) then
+          raise Exception.Create('Plano de contas não encontrado! ');
+
+      if (Application.MessageBox('Deseja excluir plano de contas?', 'Aviso', MB_ICONQUESTION + MB_YESNO + MB_DEFBUTTON2) = IDNO) then
+          Exit;
+
+      (FDao as IDaoAtulizarDados<TDaoPlanoConta>).Excluir(FDataSource.DataSet.FieldByName('id_plano').AsInteger);
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+end;
+
+function TControllerPlanoContas.RetornarDataSource(pPlano: string): TDataSource;
+begin
+   FDataSource.DataSet := FDao.Listar(TDaoFiltroPlanoContas.Create.ComDescricaoPlano(pPlano));
+   Result := FDataSource;
+end;
+
+procedure TControllerPlanoContas.SalvarPlano(value: TModelPlanoContas; enumSalvar: TEnumSalvarDados);
+begin
+   try
+      value.Validar;
+
+      case enumSalvar of
+        enCadastrar: (FDao as IDaoAtulizarDados<TModelPlanoContas>).Inserir(value);
+        enCorrigir: (FDao as IDaoAtulizarDados<TModelPlanoContas>).Alterar(value);
+      end;
+
+      (FDao as IDaoAtulizarDados<TDaoPlanoConta>).Excluir(FDataSource.DataSet.FieldByName('id_plano').AsInteger);
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+
+end;
+
+end.

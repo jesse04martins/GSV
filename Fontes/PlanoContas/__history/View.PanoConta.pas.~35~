@@ -1,0 +1,86 @@
+unit View.PanoConta;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBaseCadastro, Data.DB, Vcl.StdCtrls,
+  Vcl.Grids, Vcl.DBGrids, Vcl.Buttons, Vcl.ExtCtrls, dbSQL.Interfaces, Dao.Interfaces, Model.PlanoContas;
+
+type
+  TfrmPlanoContas = class(TFrmBaseCadastro)
+    Label1: TLabel;
+    edtPesquisar: TEdit;
+    procedure btPesquisarClick(Sender: TObject);
+    procedure btExcluirClick(Sender: TObject);
+    procedure btNovoClick(Sender: TObject);
+    procedure btCorrigirClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    FDB_SQLCommand : iDB_SQLCommand;
+    FDao : iDao<TModelPlanoContas>;
+  public
+    { Public declarations }
+  end;
+
+var
+  frmPlanoContas: TfrmPlanoContas;
+
+implementation
+
+{$R *.dfm}
+
+uses View.PanoConta.Editar, Dao.PlanoContas, Dao.FiltroPlanoContas;
+
+procedure TfrmPlanoContas.FormCreate(Sender: TObject);
+begin
+   FDao := TDaoPlanoConta.Create(FDB_SQLCommand);
+end;
+
+procedure TfrmPlanoContas.btExcluirClick(Sender: TObject);
+begin
+   try
+      FDao.Excluir(DataSource1.DataSet.FieldByName('id_plano').AsInteger);
+   except on e : Exception do
+      begin
+         Application.MessageBox(PChar(e.Message), 'Aviso', MB_ICONEXCLAMATION);
+      end;
+   end;
+end;
+
+procedure TfrmPlanoContas.btNovoClick(Sender: TObject);
+var
+  lForm : TFrmPlanoContasEditar;
+begin
+   lForm := TFrmPlanoContasEditar.Create(self, FDao);
+   try
+      lForm.ShowModal;
+   finally
+      FreeAndNil(lForm);
+   end;
+end;
+
+procedure TfrmPlanoContas.btCorrigirClick(Sender: TObject);
+var
+  lForm : TFrmPlanoContasEditar;
+begin
+   lForm := TFrmPlanoContasEditar.Create(self, FDao, DataSource1.DataSet);
+   try
+      lForm.ShowModal;
+   finally
+      FreeAndNil(lForm);
+   end;
+end;
+
+procedure TfrmPlanoContas.btPesquisarClick(Sender: TObject);
+begin
+   try
+     DataSource1.DataSet := FDao.Listar(TDaoFiltroPlanoContas.Create.ComDescricaoPlano(edtPesquisar.Text));
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+end;
+
+end.

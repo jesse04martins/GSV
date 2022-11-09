@@ -1,0 +1,51 @@
+unit uSalvarCorrecaoEmpresa;
+
+interface
+
+uses System.SysUtils, System.Classes, Model.Empresa, Dao.Empresa,
+     dbSQL.Interfaces, Data.DB, Model.Enum, Interfaces;
+
+type
+  TSalvarCorrecaoEmpresa = class(TInterfacedObject, IOperation<TModelEmpresa>, IGetValueOperation<TModelEmpresa>)
+  private
+    FDB_SQLCommand: iDB_SQLCommand;
+    FModel : TModelEmpresa;
+  public
+    constructor Create(pDataSet: TDataSet; ADB_SQLCommand : iDB_SQLCommand);
+    destructor Destroy; override;
+    procedure Execute(value : TModelEmpresa);
+    function GetValue : TModelEmpresa;
+  end;
+
+
+implementation
+
+{ TSalvarCorrecaoEmpresa }
+
+constructor TSalvarCorrecaoEmpresa.Create(pDataSet: TDataSet; ADB_SQLCommand: iDB_SQLCommand);
+begin
+   FDB_SQLCommand := ADB_SQLCommand;
+
+   FModel.IdEmpresa    := pDataSet.FieldByName('id_empresa').AsInteger;
+   FModel.RazaoSocial  := pDataSet.FieldByName('razao_social').AsString;
+   FModel.NomeFantasia := pDataSet.FieldByName('nome_fantasia').AsString;
+
+end;
+
+destructor TSalvarCorrecaoEmpresa.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TSalvarCorrecaoEmpresa.Execute(value: TModelEmpresa);
+begin
+
+end;
+
+function TSalvarCorrecaoEmpresa.GetValue: TModelEmpresa;
+begin
+
+end;
+
+end.

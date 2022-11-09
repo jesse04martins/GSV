@@ -1,0 +1,103 @@
+unit View.Empresa.Editar;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, View.FormBaseEditarCadastro, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  Model.Empresa, Dao.Interfaces, Data.DB;
+
+type
+  TFrmEmpresaEditar = class(TFrmBaseEditarCadastro)
+    edtRasaoSocial: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    edtNomeFantasia: TEdit;
+    procedure FormShow(Sender: TObject);
+  private
+    FDao : IDaoRetornarDados;
+    FModel : TModelEmpresa;
+    procedure EventoSalvarCorrecao(Sender: TObject);
+    procedure EventoSalvarInsercao(Sender: TObject);
+
+  public
+    constructor Create(AOwner: TComponent; ADao : IDaoAtulizarDados<TModelEmpresa>); overload;
+    constructor Create(AOwner: TComponent; ADao : IDaoAtulizarDados<TModelEmpresa>; ADataSet : tdataset); overload;
+  end;
+
+var
+  FrmEmpresaEditar: TFrmEmpresaEditar;
+
+implementation
+
+{$R *.dfm}
+
+constructor TFrmEmpresaEditar.Create(AOwner: TComponent; ADao : IDaoAtulizarDados<TModelEmpresa>);
+begin
+   inherited Create(AOwner);
+
+   Self.Caption := 'Nova Empresa';
+
+   FModel := TModelEmpresa.Create;
+   FDao   := ADao;
+
+   edtRasaoSocial.Text  := FModel.RazaoSocial;
+   edtNomeFantasia.Text := FModel.NomeFantasia;
+
+   btSalvar.OnClick := EventoSalvarInsercao;
+end;
+
+constructor TFrmEmpresaEditar.Create(AOwner: TComponent; ADao: iDao<TModelEmpresa>; ADataSet: tdataset);
+begin
+   inherited Create(AOwner);
+
+   Self.Caption := 'Corrigir Empresa';
+
+   FModel := TModelEmpresa.Create;
+   FDao   := ADao;
+
+   FModel.IdEmpresa    := ADataSet.FieldByName('id_empresa').AsInteger;
+   FModel.NomeFantasia := ADataSet.FieldByName('nome_fantasia').AsString;
+   FModel.RazaoSocial  := ADataSet.FieldByName('razao_social').AsString;
+
+   btSalvar.OnClick := EventoSalvarCorrecao;
+end;
+
+procedure TFrmEmpresaEditar.EventoSalvarCorrecao(Sender: TObject);
+begin
+   FModel.RazaoSocial  := edtRasaoSocial.Text;
+   FModel.NomeFantasia := edtNomeFantasia.Text;
+
+   try
+      FDao.Alterar(FModel);
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+
+   ModalResult := mrOk;
+end;
+
+procedure TFrmEmpresaEditar.EventoSalvarInsercao(Sender: TObject);
+begin
+   FModel.RazaoSocial  := edtRasaoSocial.Text;
+   FModel.NomeFantasia := edtNomeFantasia.Text;
+
+   try
+      FDao.Inserir(FModel);
+   except on e : Exception do
+      begin
+          raise Exception.Create(e.Message);
+      end;
+   end;
+   ModalResult := mrOk;
+end;
+
+procedure TFrmEmpresaEditar.FormShow(Sender: TObject);
+begin
+   edtRasaoSocial.Text  := FModel.RazaoSocial;
+   edtNomeFantasia.Text := FModel.NomeFantasia;
+end;
+
+end.
